@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.20" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.18">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Image\product\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\eShopSolution.BusinessLayer\eShopSolution.BusinessLayer.csproj" />
+    <ProjectReference Include="..\eShopSolution.cloudinaryManagerFile\eShopSolution.cloudinaryManagerFile.csproj" />
+    <ProjectReference Include="..\eShopSolution.DataLayer\eShopSolution.DataLayer.csproj" />
+    <ProjectReference Include="..\eShopSolution.DtoLayer\eShopSolution.DtoLayer.csproj" />
+    <ProjectReference Include="..\eShopSolution.EmailService\eShopSolution.EmailService.csproj" />
+    <ProjectReference Include="..\eShopSolution.EntityLayer\eShopSolution.EntityLayer.csproj" />
+    <ProjectReference Include="..\eShopSolution.PayMentService\eShopSolution.PayMentService.csproj" />
+    <ProjectReference Include="..\eShopSolution.RealTime\eShopSolution.RealTime.csproj" />
+  </ItemGroup>
+
+</Project>
