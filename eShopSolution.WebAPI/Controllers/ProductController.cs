@@ -90,7 +90,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet("GetProductInDashBoardByProductIDAndColorID/{ProductID}/{ColorID}")]
-        [Authorize(Policy = Permission.Permissions.Product.ViewProductDashBoard)]
+        [Authorize]
         public async Task<IActionResult> GetProductInDashBoardByProductIDAndColorID(int ProductID, int ColorID)
         {
             if (!ModelState.IsValid)
