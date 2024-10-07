@@ -7,5 +7,6 @@ namespace eShopSolution.cloudinaryManagerFile.Abstract
     {
         public Task<BaseModel> UploadFile(IFormFile formFile, string Folder);
         public BaseModel RemoveFile(string PublicID);
+        public Task<BaseModel> UploadFile(string source, string folder, IFormFile formFile = null);
     }
 }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
 using eShopSolution.BusinessLayer.Abstract;
 using eShopSolution.cloudinaryManagerFile.Abstract;
 using eShopSolution.DtoLayer.AddModel;
@@ -54,6 +56,13 @@ namespace eShopSolution.WebAPI.Controllers
             if (result.code != 200)
                 _cloudinaryService.RemoveFile(productImageModel.PublicID);
             return StatusCode(result.code, result.Value);
+        }
+        [HttpPost("test")]
+        [Consumes("multipart/form-data")]
+        public  async Task<IActionResult> test(string productImage)
+        {
+            var result = await _cloudinaryService.UploadFile(productImage, "ImageEshop/Product");
+            return Ok(result);
         }
 
         [HttpPut("{ID}")]

@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopSolution.cloudinaryMan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopSolution.RealTime", "eShopSolution.RealTime\eShopSolution.RealTime.csproj", "{2E876868-EB97-4B7C-A850-25F40FA02220}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopSolution.PayMentService", "eShopSolution.PayMentService\eShopSolution.PayMentService.csproj", "{D1221E56-73FC-4FF5-99EC-E52A7E15659E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopSolution.PayMentService", "eShopSolution.PayMentService\eShopSolution.PayMentService.csproj", "{D1221E56-73FC-4FF5-99EC-E52A7E15659E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopSolution.CrawlData", "eShopSolution.CrawlData\eShopSolution.CrawlData.csproj", "{3A56E3C6-5B61-4091-B2F6-0D6FC8F86DA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{D1221E56-73FC-4FF5-99EC-E52A7E15659E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1221E56-73FC-4FF5-99EC-E52A7E15659E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1221E56-73FC-4FF5-99EC-E52A7E15659E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A56E3C6-5B61-4091-B2F6-0D6FC8F86DA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A56E3C6-5B61-4091-B2F6-0D6FC8F86DA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A56E3C6-5B61-4091-B2F6-0D6FC8F86DA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A56E3C6-5B61-4091-B2F6-0D6FC8F86DA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

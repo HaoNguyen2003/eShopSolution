@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\eShopSolution.BusinessLayer\eShopSolution.BusinessLayer.csproj" />
     <ProjectReference Include="..\eShopSolution.cloudinaryManagerFile\eShopSolution.cloudinaryManagerFile.csproj" />
+    <ProjectReference Include="..\eShopSolution.CrawlData\eShopSolution.CrawlData.csproj" />
     <ProjectReference Include="..\eShopSolution.DataLayer\eShopSolution.DataLayer.csproj" />
     <ProjectReference Include="..\eShopSolution.DtoLayer\eShopSolution.DtoLayer.csproj" />
     <ProjectReference Include="..\eShopSolution.EmailService\eShopSolution.EmailService.csproj" />

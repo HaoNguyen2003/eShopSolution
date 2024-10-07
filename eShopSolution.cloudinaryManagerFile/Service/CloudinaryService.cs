@@ -15,6 +15,56 @@ namespace eShopSolution.cloudinaryManagerFile.Service
         {
             _cloudinary = CloudinaryConfig.GetCloudinary();
         }
+        public async Task<BaseModel> UploadFile(string source, string folder, IFormFile formFile = null)
+        {
+            ImageUploadParams uploadParams;
+
+            if (!string.IsNullOrEmpty(source))
+            {
+                uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription(source),
+                    Folder = folder
+                };
+            }
+            else if (formFile != null && formFile.Length > 0) 
+            {
+                uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription(Guid.NewGuid().ToString(), formFile.OpenReadStream()),
+                    Folder = folder
+                };
+            }
+            else
+            {
+                return new BaseModel
+                {
+                    IsSuccess = false,
+                    Errors = "Source URL is empty or file is null/empty."
+                };
+            }
+
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+            if (uploadResult.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var jsonResponse = JObject.Parse(uploadResult.JsonObj.ToString());
+                return new BaseModel
+                {
+                    IsSuccess = true,
+                    Message = "File uploaded successfully.",
+                    Url = jsonResponse["url"]?.ToString(),
+                    PublicID = jsonResponse["public_id"]?.ToString()
+                };
+            }
+
+            return new BaseModel
+            {
+                IsSuccess = false,
+                Errors = $"Failed to upload file: {uploadResult.Error.Message}"
+            };
+        }
+
         public BaseModel RemoveFile(string PublicID)
         {
             var deletionParams = new DeletionParams(PublicID)

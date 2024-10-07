@@ -3,6 +3,7 @@ using eShopSolution.BusinessLayer.Service;
 using eShopSolution.cloudinaryManagerFile;
 using eShopSolution.cloudinaryManagerFile.Abstract;
 using eShopSolution.cloudinaryManagerFile.Service;
+using eShopSolution.CrawlData.Model;
 using eShopSolution.DataLayer.Abstract;
 using eShopSolution.DataLayer.Context;
 using eShopSolution.DataLayer.EntityFramework;
