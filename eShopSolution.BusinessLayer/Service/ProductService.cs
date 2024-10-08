@@ -1,4 +1,5 @@
 ﻿using eShopSolution.BusinessLayer.Abstract;
+using eShopSolution.CrawlData.Model;
 using eShopSolution.DataLayer.Abstract;
 using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
@@ -265,6 +266,11 @@ namespace eShopSolution.BusinessLayer.Service
                 _customCache.Set(key: _customCache.GenerateCacheKey(model, Page, Limit),value: pagedResult, priority: CacheItemPriority.Normal);
             }
             return new BaseRep<PagedResult>() { code = 200, Value = pagedResult };
+        }
+
+        public Task<BaseRep<string>> CreateProduct(ProductModel productModel, List<ProductDataNew> collectionModels)
+        {
+            throw new NotImplementedException();
         }
     }
 }

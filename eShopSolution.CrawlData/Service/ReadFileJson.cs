@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using eShopSolution.CrawlData.Model;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace eShopSolution.CrawlData.Service
 {
     public class ReadFileJson
     {
-        public void FucntionReadFileJson(IFormFile formFile)
+        public List<ProductDataInfomation> FucntionReadFileJson(IFormFile formFile)
         {
             if (formFile == null)
             {
@@ -20,8 +21,9 @@ namespace eShopSolution.CrawlData.Service
             using (var stream = new StreamReader(formFile.OpenReadStream()))
             {
                 string json = stream.ReadToEnd();
-                var jsonData = JsonConvert.DeserializeObject<dynamic>(json);
+                var jsonData = JsonConvert.DeserializeObject<List<ProductDataInfomation>>(json);
                 Console.WriteLine($"{jsonData}");
+                return jsonData;
             }
         }
 

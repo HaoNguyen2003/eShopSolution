@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\eShopSolution.CrawlData\eShopSolution.CrawlData.csproj" />
     <ProjectReference Include="..\eShopSolution.DataLayer\eShopSolution.DataLayer.csproj" />
     <ProjectReference Include="..\eShopSolution.EmailService\eShopSolution.EmailService.csproj" />
   </ItemGroup>

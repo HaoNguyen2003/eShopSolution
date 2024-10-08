@@ -1,4 +1,5 @@
-﻿using eShopSolution.DtoLayer.AddModel;
+﻿using eShopSolution.CrawlData.Model;
+using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.RepositoryModel;
 using eShopSolution.EntityLayer.Data;
@@ -13,5 +14,6 @@ namespace eShopSolution.BusinessLayer.Abstract
         public Task<BaseRep<List<ProductCardModel>>> GetAllProduct();
         public Task<BaseRep<List<String>>> DeleteProduct(int ID);
         public Task<BaseRep<PagedResult>> GetProductByFilterAndPage(FilterModel model, int Page, int Limit);
+        public Task<BaseRep<string>> CreateProduct(ProductModel productModel, List<ProductDataNew> collectionModels);
     }
 }

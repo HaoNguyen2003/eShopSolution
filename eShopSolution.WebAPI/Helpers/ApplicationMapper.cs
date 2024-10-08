@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using eShopSolution.CrawlData.Model;
 using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.UpdateModel;
@@ -117,6 +118,21 @@ namespace eShopSolution.WebAPI.Helpers
             .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(dest => dest.check, opt => opt.MapFrom(src => 1))
             .ForMember(dest => dest.UpdateDate, opt => opt.Ignore());
+
+            CreateMap<DataInfomation, ProductModel>()
+            .ForMember(dest => dest.ID, opt => opt.Ignore())
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.productName))
+            .ForMember(dest => dest.BrandID, opt => opt.MapFrom(src => src.brandID))
+            .ForMember(dest => dest.CategoryID, opt => opt.MapFrom(src => src.categoryID))
+            .ForMember(dest => dest.GenderID, opt => opt.MapFrom(src => src.genderID))
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.productTitle))
+            .ForMember(dest => dest.PriceIn, opt => opt.MapFrom(src => src.priceIn))
+     .ForMember(dest => dest.PriceOut, opt => opt.MapFrom(src => src.priceOut))
+     .ForMember(dest => dest.Discount, opt => opt.MapFrom(src => src.discount))
+     .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.description))
+     .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => DateTime.Now))
+     .ForMember(dest => dest.check, opt => opt.MapFrom(src => 1))
+     .ForMember(dest => dest.UpdateDate, opt => opt.Ignore());
 
             CreateMap<UpdateProduct, ProductModel>()
             .ForMember(dest => dest.ID, opt => opt.Ignore())
