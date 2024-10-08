@@ -4,6 +4,7 @@ using eShopSolution.cloudinaryManagerFile;
 using eShopSolution.cloudinaryManagerFile.Abstract;
 using eShopSolution.cloudinaryManagerFile.Service;
 using eShopSolution.CrawlData.Model;
+using eShopSolution.CrawlData.Service;
 using eShopSolution.DataLayer.Abstract;
 using eShopSolution.DataLayer.Context;
 using eShopSolution.DataLayer.EntityFramework;
@@ -121,6 +122,8 @@ builder.Services.AddScoped<IInfoPaymentService, InfoService>();
 builder.Services.AddScoped<IInfoDal, InfoDal>();
 
 builder.Services.AddScoped<ZaloPayService>();
+
+builder.Services.AddScoped<ReadFileJson>();
 
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton(typeof(ICustomCache<>), typeof(CustomCache<>));
