@@ -5,5 +5,6 @@ namespace eShopSolution.DataLayer.Abstract
 {
     public interface IColorDal : IGenericDal<ColorModel, Colors>
     {
+        public Task<int> GetIntColorByName(string name);
     }
 }

@@ -46,6 +46,11 @@ namespace eShopSolution.BusinessLayer.Service
             return await _colorDal.GetByID(ID);
         }
 
+        public async Task<int> GetIntColorByName(string name)
+        {
+            return await _colorDal.GetIntColorByName(name);
+        }
+
         public async Task<BaseRep<string>> Update(int ID, ColorModel model)
         {
             _customCache.Clear();

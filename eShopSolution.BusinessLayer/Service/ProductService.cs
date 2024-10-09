@@ -268,9 +268,65 @@ namespace eShopSolution.BusinessLayer.Service
             return new BaseRep<PagedResult>() { code = 200, Value = pagedResult };
         }
 
-        public Task<BaseRep<string>> CreateProduct(ProductModel productModel, List<ProductDataNew> collectionModels)
+        public async Task<BaseRep<string>> CreateProduct(ProductModel productModel, List<ProductDataNew> collectionModels)
         {
-            throw new NotImplementedException();
+            int ProductID = await _productDal.CreateProduct(productModel);
+            if (ProductID == -1)
+            {
+                return new BaseRep<string>() { code = 500, Value = "Create Fail" };
+            }
+            try
+            {
+                foreach (var item in collectionModels)
+                {
+                    ProductColorModel productColor = new ProductColorModel();
+                    productColor.ProductID = ProductID;
+                    var ColorID = await _colorDal.GetIntColorByName(item.Color);
+                    if (ColorID == 0)
+                    {
+                        var color = await _colorDal.Create(new ColorModel() { Name = item.Color, HexValue = item.Color});
+                        ColorID = await _colorDal.GetIntColorByName(item.Color);
+                    }
+                    productColor.ColorID = ColorID;
+                    int ProductColorID = await _productColorDal.CreateProductColorReturnID(productColor);
+                    foreach (var image in item.ListImageURL)
+                    {
+                        ProductImageModel productImageModel = new ProductImageModel();
+                        productImageModel.ProductColorID = ProductColorID;
+                        productImageModel.ImageURL = image.ImageURL;
+                        productImageModel.PublicID = image.PublicID;
+                        var check = await _productImageDal.Create(productImageModel);
+                        if (check.code != 200)
+                        {
+                            await _productDal.Delete(ProductID);
+                            return new BaseRep<string>() { code = 500, Value = check.Value };
+                        }
+                    }
+                    foreach (var detailsizeandquantity in item.DetailQuantity)
+                    {
+                        DetailQuantityProductModel detailQuantityProductModel = new DetailQuantityProductModel()
+                        {
+                            ID = 0,
+                            ProductColorID = ProductColorID,
+                            SizeID = detailsizeandquantity.SizeID,
+                            Quantity = detailsizeandquantity.Quantity
+                        };
+                        var check = await _productSizeInventoryDal.CreateProductSizeInventory(detailQuantityProductModel);
+                        if (check.code != 200)
+                        {
+                            await _productDal.Delete(ProductID);
+                            return new BaseRep<string>() { code = 500, Value = check.Value };
+                        }
+                    }
+                }
+                _customCache.Clear();
+                return new BaseRep<string>() { code = 200, Value = "Create Success" };
+            }
+            catch (Exception ex)
+            {
+                await _productDal.Delete(ProductID);
+                return new BaseRep<string>() { code = 500, Value = "Create Fail: " + ex.Message };
+            }
         }
     }
 }
