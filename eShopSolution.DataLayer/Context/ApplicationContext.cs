@@ -210,6 +210,8 @@ namespace eShopSolution.DataLayer.Context
            .HasForeignKey(c => c.UserID)
            .OnDelete(DeleteBehavior.Cascade);
 
+
+
             base.OnModelCreating(modelBuilder);
 
         }
@@ -239,5 +241,9 @@ namespace eShopSolution.DataLayer.Context
         public DbSet<UserChatRoom> userChatRoom { get; set; }
         public DbSet<MessageChat> message { get; set; }
         public DbSet<InfoPayment> infoPayments { get; set; }
+        public DbSet<Permission> permissions { get; set; }
+        public DbSet<AspNetMenu> aspNetMenus { get; set; }
+        public DbSet<AspNetRoleMenu> aspNetRoleMenus { get; set;}
+        public DbSet<MenuPermission> menuPermissions {  get; set; } 
     }
 }
