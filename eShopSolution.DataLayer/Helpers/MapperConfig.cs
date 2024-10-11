@@ -349,6 +349,14 @@ namespace eShopSolution.DataLayer.Helpers
        .ForMember(dest => dest.CreateTime, opt => opt.MapFrom(src => src.ReviewDate));
 
 
+            CreateMap<PermissionModel, Permission>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.PermissionName, opt => opt.MapFrom(src => src.PermissionName));
+
+            CreateMap<Permission, PermissionModel>()
+                .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.PermissionName, opt => opt.MapFrom(src => src.PermissionName));
+
         }
     }
 }
