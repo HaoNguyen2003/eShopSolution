@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eShopSolution.DataLayer.Context;
 
@@ -11,9 +12,11 @@ using eShopSolution.DataLayer.Context;
 namespace eShopSolution.DataLayer.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20241011154159_uniquekeyRoleMenu")]
+    partial class uniquekeyRoleMenu
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -392,7 +395,7 @@ namespace eShopSolution.DataLayer.Migrations
                     b.ToTable("AspNetMenu");
                 });
 
-            modelBuilder.Entity("eShopSolution.EntityLayer.Data.AspNetRoleAccess", b =>
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.AspNetRoleMenu", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -414,7 +417,7 @@ namespace eShopSolution.DataLayer.Migrations
                     b.HasIndex("MenuPermissionID", "RoleID")
                         .IsUnique();
 
-                    b.ToTable("AspNetRoleAccess");
+                    b.ToTable("AspNetRoleMenu");
                 });
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Brand", b =>
@@ -1179,16 +1182,16 @@ namespace eShopSolution.DataLayer.Migrations
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("eShopSolution.EntityLayer.Data.AspNetRoleAccess", b =>
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.AspNetRoleMenu", b =>
                 {
                     b.HasOne("eShopSolution.EntityLayer.Data.MenuPermission", "MenuPermission")
-                        .WithMany("AspNetRoleAccesses")
+                        .WithMany("AspNetRoleMenus")
                         .HasForeignKey("MenuPermissionID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("eShopSolution.EntityLayer.Data.AppRole", "AppRole")
-                        .WithMany("AspNetRoleAccesses")
+                        .WithMany("AspNetRoleMenus")
                         .HasForeignKey("RoleID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1510,7 +1513,7 @@ namespace eShopSolution.DataLayer.Migrations
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.AppRole", b =>
                 {
-                    b.Navigation("AspNetRoleAccesses");
+                    b.Navigation("AspNetRoleMenus");
                 });
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.AppUser", b =>
@@ -1580,7 +1583,7 @@ namespace eShopSolution.DataLayer.Migrations
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.MenuPermission", b =>
                 {
-                    b.Navigation("AspNetRoleAccesses");
+                    b.Navigation("AspNetRoleMenus");
                 });
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Order", b =>

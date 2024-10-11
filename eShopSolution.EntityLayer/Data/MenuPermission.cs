@@ -17,6 +17,6 @@ namespace eShopSolution.EntityLayer.Data
         public int PermissionID {  get; set; }
         public virtual Permission Permission { get; set; }
         public virtual AspNetMenu AspNetMenu { get; set; } 
-        public virtual ICollection<AspNetRoleMenu> AspNetRoleMenus { get; set; }
+        public virtual ICollection<AspNetRoleAccess> AspNetRoleAccesses { get; set; }
     }
 }

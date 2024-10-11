@@ -211,18 +211,21 @@ namespace eShopSolution.DataLayer.Context
            .OnDelete(DeleteBehavior.Cascade);
 
 
-            modelBuilder.Entity<AspNetRoleMenu>()
+            modelBuilder.Entity<AspNetRoleAccess>()
             .HasOne<AppRole>(s=>s.AppRole)
-            .WithMany(g=>g.AspNetRoleMenus)
+            .WithMany(g=>g.AspNetRoleAccesses)
             .HasForeignKey(c=> c.RoleID)
             .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<AspNetRoleMenu>()
+            modelBuilder.Entity<AspNetRoleAccess >()
            .HasOne<MenuPermission>(s => s.MenuPermission)
-           .WithMany(g => g.AspNetRoleMenus)
+           .WithMany(g => g.AspNetRoleAccesses)
            .HasForeignKey(c => c.MenuPermissionID)
            .OnDelete(DeleteBehavior.Cascade);
 
+           modelBuilder.Entity<AspNetRoleAccess>()
+          .HasIndex(mp => new { mp.MenuPermissionID, mp.RoleID })
+          .IsUnique();
 
             modelBuilder.Entity<MenuPermission>()
             .HasOne(pc => pc.AspNetMenu)
@@ -272,7 +275,7 @@ namespace eShopSolution.DataLayer.Context
         public DbSet<InfoPayment> infoPayments { get; set; }
         public DbSet<Permission> permissions { get; set; }
         public DbSet<AspNetMenu> aspNetMenus { get; set; }
-        public DbSet<AspNetRoleMenu> aspNetRoleMenus { get; set;}
+        public DbSet<AspNetRoleAccess> AspNetRoleAccesses { get; set;}
         public DbSet<MenuPermission> menuPermissions {  get; set; } 
     }
 }

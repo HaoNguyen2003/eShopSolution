@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace eShopSolution.EntityLayer.Data
 {
-    [Table("AspNetRoleMenu")]
-    public class AspNetRoleMenu
+    [Table("AspNetRoleAccess")]
+    public class AspNetRoleAccess
     {
         [Key]
         public int ID { get; set; }
