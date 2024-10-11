@@ -237,6 +237,9 @@ namespace eShopSolution.DataLayer.Context
            .HasForeignKey(pc => pc.PermissionID)
            .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<MenuPermission>()
+           .HasIndex(mp => new { mp.MenuID, mp.PermissionID })
+           .IsUnique();
 
             base.OnModelCreating(modelBuilder);
 

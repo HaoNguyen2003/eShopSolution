@@ -288,12 +288,12 @@ namespace eShopSolution.DataLayer.Helpers
            .ForMember(dest => dest.UserID, opt => opt.MapFrom(src => src.UserID))
            .ForMember(dest => dest.AddressID, opt => opt.MapFrom(src => src.AddressID))
            .ForMember(dest => dest.OrderID, opt => opt.Ignore())
-           .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src=>DateTime.Now))
+           .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => DateTime.Now))
            .ForMember(dest => dest.PaymentMethodID, opt => opt.MapFrom(src => src.PaymentMethodID))
            .ForMember(dest => dest.OrderStatusID, opt => opt.MapFrom(src => src.OrderStatusID))
            .ForMember(dest => dest.ShippingProviderID, opt => opt.MapFrom(src => src.ShippingProviderID));
 
-            CreateMap<Order,OrderModel>()
+            CreateMap<Order, OrderModel>()
            .ForMember(dest => dest.UserID, opt => opt.MapFrom(src => src.UserID))
            .ForMember(dest => dest.AddressID, opt => opt.MapFrom(src => src.AddressID))
            .ForMember(dest => dest.OrderID, opt => opt.MapFrom(src => src.OrderID))
@@ -301,7 +301,7 @@ namespace eShopSolution.DataLayer.Helpers
            .ForMember(dest => dest.OrderStatusID, opt => opt.MapFrom(src => src.OrderStatusID))
            .ForMember(dest => dest.ShippingProviderID, opt => opt.MapFrom(src => src.ShippingProviderID));
 
-            CreateMap<DetailOrderModel,DetailOrder>()
+            CreateMap<DetailOrderModel, DetailOrder>()
             .ForMember(dest => dest.ID, opt => opt.Ignore())
            .ForMember(dest => dest.ProductSizeInventoryID, opt => opt.MapFrom(src => src.ProductSizeInventoryID))
            .ForMember(dest => dest.OrderID, opt => opt.MapFrom(src => src.OrderID))
@@ -325,36 +325,36 @@ namespace eShopSolution.DataLayer.Helpers
          .ForMember(dest => dest.TransactionNo, opt => opt.MapFrom(src => src.TransactionNo))
          .ForMember(dest => dest.UserCreateBy, opt => opt.MapFrom(src => src.UserCreateBy));
 
-         CreateMap<InfoPayment,InfoPaymentModel>()
-        .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
-        .ForMember(dest => dest.TxnRef, opt => opt.MapFrom(src => src.TxnRef))
-        .ForMember(dest => dest.OrderID, opt => opt.MapFrom(src => src.OrderID))
-        .ForMember(dest => dest.TransactionNo, opt => opt.MapFrom(src => src.TransactionNo))
-        .ForMember(dest => dest.UserCreateBy, opt => opt.MapFrom(src => src.UserCreateBy));
+            CreateMap<InfoPayment, InfoPaymentModel>()
+           .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
+           .ForMember(dest => dest.TxnRef, opt => opt.MapFrom(src => src.TxnRef))
+           .ForMember(dest => dest.OrderID, opt => opt.MapFrom(src => src.OrderID))
+           .ForMember(dest => dest.TransactionNo, opt => opt.MapFrom(src => src.TransactionNo))
+           .ForMember(dest => dest.UserCreateBy, opt => opt.MapFrom(src => src.UserCreateBy));
 
-        CreateMap<ProductReviewModel, ProductReview>()
-       .ForMember(dest => dest.ReviewID, opt => opt.Ignore())
-       .ForMember(dest => dest.ProductID, opt => opt.MapFrom(src => src.ProductID))
-       .ForMember(dest => dest.DetailOrderID, opt => opt.MapFrom(src => src.DetailOrderID))
-       .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))
-       .ForMember(dest => dest.Review, opt => opt.MapFrom(src => src.Review))
-       .ForMember(dest => dest.ReviewDate, opt => opt.MapFrom(src => src.CreateTime));
+            CreateMap<ProductReviewModel, ProductReview>()
+           .ForMember(dest => dest.ReviewID, opt => opt.Ignore())
+           .ForMember(dest => dest.ProductID, opt => opt.MapFrom(src => src.ProductID))
+           .ForMember(dest => dest.DetailOrderID, opt => opt.MapFrom(src => src.DetailOrderID))
+           .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))
+           .ForMember(dest => dest.Review, opt => opt.MapFrom(src => src.Review))
+           .ForMember(dest => dest.ReviewDate, opt => opt.MapFrom(src => src.CreateTime));
 
-        CreateMap<ProductReview,ProductReviewModel>()
-       .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ReviewID))
-       .ForMember(dest => dest.ProductID, opt => opt.MapFrom(src => src.ProductID))
-       .ForMember(dest => dest.DetailOrderID, opt => opt.MapFrom(src => src.DetailOrderID))
-       .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))
-       .ForMember(dest => dest.Review, opt => opt.MapFrom(src => src.Review))
-       .ForMember(dest => dest.CreateTime, opt => opt.MapFrom(src => src.ReviewDate));
+            CreateMap<ProductReview, ProductReviewModel>()
+           .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ReviewID))
+           .ForMember(dest => dest.ProductID, opt => opt.MapFrom(src => src.ProductID))
+           .ForMember(dest => dest.DetailOrderID, opt => opt.MapFrom(src => src.DetailOrderID))
+           .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))
+           .ForMember(dest => dest.Review, opt => opt.MapFrom(src => src.Review))
+           .ForMember(dest => dest.CreateTime, opt => opt.MapFrom(src => src.ReviewDate));
 
 
             CreateMap<PermissionModel, Permission>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.PermissionName, opt => opt.MapFrom(src => src.PermissionName));
+           .ForMember(dest => dest.Id, opt => opt.Ignore())
+           .ForMember(dest => dest.PermissionName, opt => opt.MapFrom(src => src.PermissionName));
 
             CreateMap<Permission, PermissionModel>()
-                .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.Id))
+               .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.PermissionName, opt => opt.MapFrom(src => src.PermissionName));
 
             CreateMap<MenuModel, AspNetMenu>()
@@ -366,7 +366,7 @@ namespace eShopSolution.DataLayer.Helpers
 
 
             CreateMap<AspNetMenu, MenuModel>()
-              .ForMember(dest => dest.ID, opt => opt.MapFrom(src=>src.ID))
+              .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
               .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
               .ForMember(dest => dest.URL, opt => opt.MapFrom(src => src.URL))
               .ForMember(dest => dest.icon, opt => opt.MapFrom(src => src.icon))
@@ -377,10 +377,11 @@ namespace eShopSolution.DataLayer.Helpers
              .ForMember(dest => dest.MenuID, opt => opt.MapFrom(src => src.MenuID))
              .ForMember(dest => dest.PermissionID, opt => opt.MapFrom(src => src.PermissionID));
 
-            CreateMap<MenuPermission,PermissionMenuModel>()
-              .ForMember(dest => dest.ID, opt => opt.MapFrom(src=>src.ID))
+            CreateMap<MenuPermission, PermissionMenuModel>()
+              .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
               .ForMember(dest => dest.MenuID, opt => opt.MapFrom(src => src.MenuID))
               .ForMember(dest => dest.PermissionID, opt => opt.MapFrom(src => src.PermissionID));
+
 
         }
     }
