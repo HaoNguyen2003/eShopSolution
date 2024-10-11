@@ -42,7 +42,7 @@ namespace eShopSolution.WebAPI.Controllers
                     var model = new ProductDataNew() { Color=collectionModel.Color,DetailQuantity=collectionModel.DetailQuantity};
                     foreach (var fileModel in collectionModel.Imgs)
                     {
-                        var resultImage = await _cloudinaryService.UploadFile(fileModel, "ImageEshop/Test");
+                        var resultImage = await _cloudinaryService.UploadFile(fileModel, "ImageEshop/Product");
                         if (resultImage.IsSuccess)
                             model.ListImageURL.Add(new CloudinaryImageModel() { ImageURL = resultImage.Url, PublicID = resultImage.PublicID });
                     }
