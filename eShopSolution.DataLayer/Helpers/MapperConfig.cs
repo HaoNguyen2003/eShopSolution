@@ -382,6 +382,16 @@ namespace eShopSolution.DataLayer.Helpers
               .ForMember(dest => dest.MenuID, opt => opt.MapFrom(src => src.MenuID))
               .ForMember(dest => dest.PermissionID, opt => opt.MapFrom(src => src.PermissionID));
 
+            CreateMap<RoleAccessModel, AspNetRoleAccess>()
+             .ForMember(dest => dest.ID, opt => opt.Ignore())
+             .ForMember(dest => dest.MenuPermissionID, opt => opt.MapFrom(src => src.MenuPermissionID))
+             .ForMember(dest => dest.RoleID, opt => opt.MapFrom(src => src.RoleID));
+
+            CreateMap<AspNetRoleAccess, RoleAccessModel>()
+              .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
+              .ForMember(dest => dest.MenuPermissionID, opt => opt.MapFrom(src => src.MenuPermissionID))
+              .ForMember(dest => dest.RoleID, opt => opt.MapFrom(src => src.RoleID));
+
 
         }
     }
