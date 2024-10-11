@@ -121,6 +121,9 @@ builder.Services.AddScoped<IProductReviewDal, ProductReviewDal>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IPermissionDal, PermissionDal>();
 
+builder.Services.AddScoped<IMenuService, MenuService>();
+builder.Services.AddScoped<IMenuDal, MenuDal>();
+
 builder.Services.AddScoped<IInfoPaymentService, InfoService>();
 builder.Services.AddScoped<IInfoDal, InfoDal>();
 
