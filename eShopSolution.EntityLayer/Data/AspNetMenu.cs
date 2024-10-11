@@ -17,6 +17,6 @@ namespace eShopSolution.EntityLayer.Data
         public string? icon { get; set; }
         public string? title { get; set; }
         public string? URL {  get; set; }
-        public virtual ICollection<AspNetRoleMenu> AspNetRoleMenus { get; set; }
+        public virtual ICollection<MenuPermission> MenuPermissions { get; set; }
     }
 }

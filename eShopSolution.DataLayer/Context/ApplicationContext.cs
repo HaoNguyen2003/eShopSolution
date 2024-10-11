@@ -218,20 +218,16 @@ namespace eShopSolution.DataLayer.Context
             .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<AspNetRoleMenu>()
-           .HasOne<AspNetMenu>(s => s.Menu)
+           .HasOne<MenuPermission>(s => s.MenuPermission)
            .WithMany(g => g.AspNetRoleMenus)
-           .HasForeignKey(c => c.MenuID)
+           .HasForeignKey(c => c.MenuPermissionID)
            .OnDelete(DeleteBehavior.Cascade);
 
 
             modelBuilder.Entity<MenuPermission>()
-            .HasKey(pc => new { pc.RoleMenuID, pc.PermissionID });
-
-            
-            modelBuilder.Entity<MenuPermission>()
-            .HasOne(pc => pc.RoleMenu)
+            .HasOne(pc => pc.AspNetMenu)
             .WithMany(p => p.MenuPermissions)
-            .HasForeignKey(pc => pc.RoleMenuID)
+            .HasForeignKey(pc => pc.MenuID)
             .OnDelete(DeleteBehavior.Cascade);
 
 
