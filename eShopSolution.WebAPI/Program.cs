@@ -127,6 +127,9 @@ builder.Services.AddScoped<IPermissionMenuDal, PermissionMenuDal>();
 builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IMenuDal, MenuDal>();
 
+builder.Services.AddScoped<IAspNetRoleAccessService,AspNetRoleAccessService>();
+builder.Services.AddScoped<IAspNetRoleAccessDal, AspNetRoleAccessDal>();
+
 builder.Services.AddScoped<IInfoPaymentService, InfoService>();
 builder.Services.AddScoped<IInfoDal, InfoDal>();
 
