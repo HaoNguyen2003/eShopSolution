@@ -126,7 +126,7 @@ namespace eShopSolution.BusinessLayer.Service
             return new Response<List<RoleModel>>() { IsSuccess=true,Value=roles};
         }
 
-
+        
         public async Task<Response<List<AppUserModel>>> GetAllUsersAsync()
         {
             var users = await _userManager.Users.Select(u => new AppUserModel
@@ -218,6 +218,29 @@ namespace eShopSolution.BusinessLayer.Service
                 Error = string.Join(", ", result.Errors.Select(e => e.Description))
             };
 
+        }
+
+        public async Task<Response<RoleModel>> GetRolesByIDAsync(string ID)
+        {
+            var role = await _roleManager.FindByIdAsync(ID);
+            if (role == null)
+            {
+                return new Response<RoleModel> { Error = "Role not found", IsSuccess = false };
+            }
+            return  new Response<RoleModel> { IsSuccess = true,Value=new RoleModel() {Id=role.Id,Name=role.Name} };
+        }
+
+        public async Task<Response<string>> DeletRole(string ID)
+        {
+            var role = await _roleManager.FindByIdAsync(ID);
+            if (role == null)
+            {
+                return new Response<string> { Error = "Role not found", IsSuccess = false };
+            }
+            var result = await _roleManager.DeleteAsync(role);
+            if (!result.Succeeded)
+                return new Response<string> { Error = string.Join(", ", result.Errors), IsSuccess = false };
+            return new Response<string> { IsSuccess = true };
         }
     }
 
