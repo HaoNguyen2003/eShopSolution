@@ -121,6 +121,9 @@ builder.Services.AddScoped<IProductReviewDal, ProductReviewDal>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IPermissionDal, PermissionDal>();
 
+builder.Services.AddScoped<IPermissionMenuService, PermissionMenuService>();
+builder.Services.AddScoped<IPermissionMenuDal, PermissionMenuDal>();
+
 builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IMenuDal, MenuDal>();
 

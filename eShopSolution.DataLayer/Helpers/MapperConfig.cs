@@ -372,6 +372,16 @@ namespace eShopSolution.DataLayer.Helpers
               .ForMember(dest => dest.icon, opt => opt.MapFrom(src => src.icon))
               .ForMember(dest => dest.title, opt => opt.MapFrom(src => src.title));
 
+            CreateMap<PermissionMenuModel, MenuPermission>()
+             .ForMember(dest => dest.ID, opt => opt.Ignore())
+             .ForMember(dest => dest.MenuID, opt => opt.MapFrom(src => src.MenuID))
+             .ForMember(dest => dest.PermissionID, opt => opt.MapFrom(src => src.PermissionID));
+
+            CreateMap<MenuPermission,PermissionMenuModel>()
+              .ForMember(dest => dest.ID, opt => opt.MapFrom(src=>src.ID))
+              .ForMember(dest => dest.MenuID, opt => opt.MapFrom(src => src.MenuID))
+              .ForMember(dest => dest.PermissionID, opt => opt.MapFrom(src => src.PermissionID));
+
         }
     }
 }
