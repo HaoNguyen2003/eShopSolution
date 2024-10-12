@@ -3,6 +3,8 @@ using eShopSolution.BusinessLayer.Abstract;
 using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.UpdateModel;
+using eShopSolution.WebAPI.Permission;
+using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eShopSolution.WebAPI.Controllers
@@ -34,6 +36,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPost]
+        [PermissionAuthorize("Color.Create")]
         public async Task<IActionResult> AddColor([FromBody] AddColor addColor)
         {
             if (!ModelState.IsValid)
