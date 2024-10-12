@@ -9,13 +9,13 @@ namespace eShopSolution.BusinessLayer.Abstract
         Task<RegistrationResponseDto> CreateUserAsync(SignUp createUserDto);
         Task<Response<string>> ConfirmEmail(string token, string email);
         public Task<Response<Dictionary<string, string?>>> GenerateConfirmToken(string Email);
-        public Task<Response<string>> CreateRoleAsync(AddRole createRoleDto);
+        public Task<Response<RoleModel>> CreateRoleAsync(AddRole createRoleDto);
         public Task<Response<List<RoleModel>>> GetAllRolesAsync();
-        public Task<Response<RoleModel>> GetRolesByIDAsync(string ID);
+        public Task<Response<RoleModel>> GetRolesByIDOrNameAsync(string? ID,string? Name);
         public Task<Response<List<AppUserModel>>> GetAllUsersAsync();
         public Task<Response<List<RoleModel>>> GetRoleAssignAsync(string id);
         public Task RoleAssignAsync(string userId, List<RoleModel> roleAssignDto);
-        public Task<Response<string>> UpdateRoleAync(RoleModel updateRoleDto);
+        public Task<Response<RoleModel>> UpdateRoleAync(RoleModel updateRoleDto);
         public Task<Response<string>> UpdateUserAync(AppUserModel updateUserDto);
         public Task<Response<string>>UpdateAvatar(string avatar,string publicID, string id);
         public Task<Response<string>> DeletRole(string ID);
