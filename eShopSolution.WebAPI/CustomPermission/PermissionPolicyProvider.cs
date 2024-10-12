@@ -5,10 +5,10 @@ using Microsoft.Extensions.Options;
 namespace eShopSolution.WebAPI.CustomPermission
 {
 
-    public class PermissionPolicyProvider : IAuthorizationPolicyProvider
+    public class PermissionPolicyProvider //: IAuthorizationPolicyProvider
     {
 
-        public DefaultAuthorizationPolicyProvider FallbackPolicyProvider { get; }
+      /*  public DefaultAuthorizationPolicyProvider FallbackPolicyProvider { get; }
         public PermissionPolicyProvider(IOptions<AuthorizationOptions> options)
         {
             FallbackPolicyProvider = new DefaultAuthorizationPolicyProvider(options);
@@ -19,12 +19,12 @@ namespace eShopSolution.WebAPI.CustomPermission
 
         public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
         {
-            if (!policyName.StartsWith(CustomClaimTypes.Permission, StringComparison.OrdinalIgnoreCase))
+            if (!policyName.StartsWith(PermissionHandler.Permission, StringComparison.OrdinalIgnoreCase))
                 return FallbackPolicyProvider.GetPolicyAsync(policyName);
             var policy = new AuthorizationPolicyBuilder();
             policy.RequireAuthenticatedUser();
             policy.AddRequirements(new PermissionRequirement(policyName));
             return Task.FromResult(policy.Build());
-        }
+        }*/
     }
 }

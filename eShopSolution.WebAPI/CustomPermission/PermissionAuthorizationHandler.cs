@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace eShopSolution.WebAPI.CustomPermission
 {
-    public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
+    public class PermissionAuthorizationHandler //: AuthorizationHandler<PermissionRequirement>
     {
-        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
+       /* protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
              PermissionRequirement requirement)
         {
             if ((context.User.Identity != null && !context.User.Identity.IsAuthenticated) || context.User.Identity == null)
@@ -21,14 +21,13 @@ namespace eShopSolution.WebAPI.CustomPermission
                 return;
             }
 
-            if (permissions.Any(x => x.Type == CustomClaimTypes.Permission
+            if (permissions.Any(x => x.Type == PermissionHandler.Permission
                                      && x.Value == requirement.Permission
                                      && x.Issuer == "LOCAL AUTHORITY"))
             {
                 context.Succeed(requirement);
                 return;
             }
-            context.Fail();
+            context.Fail();*/
         }
     }
-}
