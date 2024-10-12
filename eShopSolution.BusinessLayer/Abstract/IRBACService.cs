@@ -14,8 +14,8 @@ namespace eShopSolution.BusinessLayer.Abstract
     {
         public Task<Response<List<PolicyModel>>> GetAllPermissionOfUser(string UserID);
         public Task<Response<List<PolicyModel>>> CreateRoleAndPermission(AddRole role, List<PermissionMenuModel> permissionMenuModels);
-        public Task<Response<string>> CreateRoleAccess(RoleAccessModel roleAccessModel);
-        public Task<Response<string>> DeleteRoleAccess(int ID);
+        public Task<Response<PolicyModel>> GetRoleAccessByID(int RoleAccessID);
+        public Task<Response<List<PolicyModel>>> GetAllRoleAccess();
         public Task<Response<List<PolicyModel>>> GetAllPermissionOfRole(string RoleID);
 
     }
