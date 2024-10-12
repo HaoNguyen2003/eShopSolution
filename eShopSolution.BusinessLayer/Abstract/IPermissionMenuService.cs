@@ -10,6 +10,6 @@ namespace eShopSolution.BusinessLayer.Abstract
 {
     public interface IPermissionMenuService:IGenericService<PermissionMenuModel,MenuPermission>
     {
-
+        public Task<List<PermissionMenuModel>> GetPermissionMenuModelsByRoleAccessID(int ID);
     }
 }
