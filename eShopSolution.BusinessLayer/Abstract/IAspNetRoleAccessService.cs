@@ -11,5 +11,6 @@ namespace eShopSolution.BusinessLayer.Abstract
 {
     public interface IAspNetRoleAccessService:IGenericService<RoleAccessModel,AspNetRoleAccess>
     {
+        public Task<List<RoleAccessModel>>GetAllRoleAccessModel(string RoleID);
     }
 }
