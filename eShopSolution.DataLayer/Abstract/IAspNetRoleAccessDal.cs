@@ -10,5 +10,6 @@ namespace eShopSolution.DataLayer.Abstract
 {
     public interface IAspNetRoleAccessDal:IGenericDal<RoleAccessModel,AspNetRoleAccess>
     {
+        public Task<List<RoleAccessModel>> GetAllRoleAccessModel(string RoleID);
     }
 }
