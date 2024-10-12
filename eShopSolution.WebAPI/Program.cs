@@ -19,6 +19,7 @@ using eShopSolution.PayMentService.Service;
 using eShopSolution.RealTime.DataService;
 using eShopSolution.RealTime.Hubs;
 using eShopSolution.WebAPI.CustomPermission;
+using eShopSolution.WebAPI.Permission;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -26,6 +27,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Xceed.Document.NET;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -130,6 +132,8 @@ builder.Services.AddScoped<IMenuDal, MenuDal>();
 builder.Services.AddScoped<IAspNetRoleAccessService,AspNetRoleAccessService>();
 builder.Services.AddScoped<IAspNetRoleAccessDal, AspNetRoleAccessDal>();
 
+builder.Services.AddScoped<IRBACService, RBACService>();
+
 builder.Services.AddScoped<IInfoPaymentService, InfoService>();
 builder.Services.AddScoped<IInfoDal, InfoDal>();
 
@@ -142,6 +146,15 @@ builder.Services.AddSingleton(typeof(ICustomCache<>), typeof(CustomCache<>));
 builder.Services.AddSingleton<ShareDb>();
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("PermissionPolicy", policy =>
+        policy.Requirements.Add(new PermissionRequirement("")));
+});
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+
 
 builder.Services.AddCors(options =>
 {
