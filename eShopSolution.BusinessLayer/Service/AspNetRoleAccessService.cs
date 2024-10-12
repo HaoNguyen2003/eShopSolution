@@ -35,6 +35,11 @@ namespace eShopSolution.BusinessLayer.Service
             return await _aspNetRoleAccessDal.GetAll();
         }
 
+        public async Task<List<RoleAccessModel>> GetAllRoleAccessModel(string RoleID)
+        {
+            return await _aspNetRoleAccessDal.GetAllRoleAccessModel(RoleID);
+        }
+
         public async Task<BaseRep<RoleAccessModel>> GetByID(int ID)
         {
             return await _aspNetRoleAccessDal.GetByID(ID);
