@@ -23,9 +23,9 @@ namespace eShopSolution.WebAPI.Controllers
             return Ok(result);
         }
         [HttpGet("ID")]
-        public async Task<IActionResult> GetByID(string ID)
+        public async Task<IActionResult> GetByID(string? ID, string? Name)
         {
-            var result = await _userService.GetRolesByIDAsync(ID);
+            var result = await _userService.GetRolesByIDOrNameAsync(ID,Name);
             if (!result.IsSuccess)
                 return NotFound();
             return Ok(result);
