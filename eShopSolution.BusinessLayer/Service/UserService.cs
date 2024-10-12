@@ -92,12 +92,12 @@ namespace eShopSolution.BusinessLayer.Service
 
 
 
-        public async Task<Response<string>> CreateRoleAsync(AddRole createRoleDto)
+        public async Task<Response<RoleModel>> CreateRoleAsync(AddRole createRoleDto)
         {
 
             var roleExists = await _roleManager.RoleExistsAsync(createRoleDto.Name);
             if (roleExists)
-                return new Response<string>() { IsSuccess = false, Error = "Role already exists" };
+                return new Response<RoleModel>() { IsSuccess = false, Error = "Role already exists" };
             var identityRole = new AppRole
             {
                 Name = createRoleDto.Name,
@@ -108,10 +108,10 @@ namespace eShopSolution.BusinessLayer.Service
 
             if (result.Succeeded)
             {
-                return new Response<string>() { IsSuccess = true, Error = "Role created successfully" };
+                return new Response<RoleModel>() { IsSuccess = true, Value = new RoleModel() { Id=identityRole.Id,Name=identityRole.Name} };
             }
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-            return new Response<string>() { IsSuccess = false, Error = $"Failed to create role: {errors}" };
+            return new Response<RoleModel>() { IsSuccess = false, Error = $"Failed to create role: {errors}" };
         }
 
         public async Task<Response<List<RoleModel>>> GetAllRolesAsync()
@@ -164,21 +164,21 @@ namespace eShopSolution.BusinessLayer.Service
             }
         }
 
-        public async Task<Response<string>> UpdateRoleAync(RoleModel updateRoleDto)
+        public async Task<Response<RoleModel>> UpdateRoleAync(RoleModel updateRoleDto)
         {
             var role = await _roleManager.FindByIdAsync(updateRoleDto.Id);
             if (role == null)
             {
-                return new Response<string> { Error = "Role not found", IsSuccess = false };
+                return new Response<RoleModel> { Error = "Role not found", IsSuccess = false };
             }
             role.Name = updateRoleDto.Name;
             var result = await _roleManager.UpdateAsync(role);
             if (result.Succeeded)
             {
-                return new Response<string> { Error = "Role updated successfully", IsSuccess = true };
+                return new Response<RoleModel> { Value = new RoleModel() { Id=updateRoleDto.Id,Name=updateRoleDto.Name}, IsSuccess = true };
             }
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-            return new Response<string> { Error = $"Failed to update role: {errors}", IsSuccess = false};
+            return new Response<RoleModel> { Error = $"Failed to update role: {errors}", IsSuccess = false};
         }
 
         public async Task<Response<string>> UpdateUserAync(AppUserModel updateUserDto)
@@ -220,14 +220,34 @@ namespace eShopSolution.BusinessLayer.Service
 
         }
 
-        public async Task<Response<RoleModel>> GetRolesByIDAsync(string ID)
+        public async Task<Response<RoleModel>> GetRolesByIDOrNameAsync(string? ID, string? Name)
         {
-            var role = await _roleManager.FindByIdAsync(ID);
+            AppRole? role = null;
+            if (string.IsNullOrEmpty(ID) && string.IsNullOrEmpty(Name))
+            {
+                return new Response<RoleModel> { Error = "ID or Name must be provided", IsSuccess = false };
+            }
+            if (!string.IsNullOrEmpty(ID))
+            {
+                role = await _roleManager.FindByIdAsync(ID);
+            }
+            else if (!string.IsNullOrEmpty(Name))
+            {
+                role = await _roleManager.FindByNameAsync(Name);
+            }
             if (role == null)
             {
                 return new Response<RoleModel> { Error = "Role not found", IsSuccess = false };
             }
-            return  new Response<RoleModel> { IsSuccess = true,Value=new RoleModel() {Id=role.Id,Name=role.Name} };
+            return new Response<RoleModel>
+            {
+                IsSuccess = true,
+                Value = new RoleModel
+                {
+                    Id = role.Id,
+                    Name = role.Name
+                }
+            };
         }
 
         public async Task<Response<string>> DeletRole(string ID)
@@ -242,6 +262,7 @@ namespace eShopSolution.BusinessLayer.Service
                 return new Response<string> { Error = string.Join(", ", result.Errors), IsSuccess = false };
             return new Response<string> { IsSuccess = true };
         }
+
     }
 
 }
