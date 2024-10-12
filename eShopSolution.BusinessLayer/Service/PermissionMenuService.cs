@@ -38,6 +38,11 @@ namespace eShopSolution.BusinessLayer.Service
             return await _permissionMenuDal.GetByID(ID);
         }
 
+        public Task<List<PermissionMenuModel>> GetPermissionMenuModelsByRoleAccessID(int ID)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<BaseRep<string>> Update(int ID, PermissionMenuModel model)
         {
             return await _permissionMenuDal.Update(ID, model);  
