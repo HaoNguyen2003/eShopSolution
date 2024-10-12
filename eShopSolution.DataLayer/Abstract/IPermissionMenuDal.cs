@@ -10,6 +10,6 @@ namespace eShopSolution.DataLayer.Abstract
 {
     public interface IPermissionMenuDal:IGenericDal<PermissionMenuModel,MenuPermission>
     {
-
+        
     }
 }

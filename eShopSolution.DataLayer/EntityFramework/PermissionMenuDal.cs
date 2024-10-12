@@ -16,5 +16,7 @@ namespace eShopSolution.DataLayer.EntityFramework
         public PermissionMenuDal(ApplicationContext context, IMapper mapper) : base(context, mapper)
         {
         }
+
+      
     }
 }
