@@ -11,5 +11,6 @@ namespace eShopSolution.DtoLayer.Model
         public int ID { get; set; }
         public int MenuID { get; set; }
         public int PermissionID { get; set; }
+        public string FunctionName {  get; set; }
     }
 }

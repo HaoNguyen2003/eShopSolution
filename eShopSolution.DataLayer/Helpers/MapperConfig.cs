@@ -375,12 +375,14 @@ namespace eShopSolution.DataLayer.Helpers
             CreateMap<PermissionMenuModel, MenuPermission>()
              .ForMember(dest => dest.ID, opt => opt.Ignore())
              .ForMember(dest => dest.MenuID, opt => opt.MapFrom(src => src.MenuID))
-             .ForMember(dest => dest.PermissionID, opt => opt.MapFrom(src => src.PermissionID));
+             .ForMember(dest => dest.PermissionID, opt => opt.MapFrom(src => src.PermissionID))
+             .ForMember(dest => dest.FunctionName, opt => opt.MapFrom(src => src.FunctionName));
 
             CreateMap<MenuPermission, PermissionMenuModel>()
               .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
               .ForMember(dest => dest.MenuID, opt => opt.MapFrom(src => src.MenuID))
-              .ForMember(dest => dest.PermissionID, opt => opt.MapFrom(src => src.PermissionID));
+              .ForMember(dest => dest.PermissionID, opt => opt.MapFrom(src => src.PermissionID))
+              .ForMember(dest => dest.FunctionName, opt => opt.MapFrom(src => src.FunctionName));
 
             CreateMap<RoleAccessModel, AspNetRoleAccess>()
              .ForMember(dest => dest.ID, opt => opt.Ignore())
