@@ -1,5 +1,4 @@
 ﻿using eShopSolution.BusinessLayer.Abstract;
-using eShopSolution.DataLayer.Migrations;
 using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.RepositoryModel;

@@ -9,12 +9,12 @@ namespace eShopSolution.DataLayer.Context
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=MyManagerStoreNew;Integrated Security=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer("Data Source=DESKTOP-Q0LVKG1;Initial Catalog=MyManagerStoreNew;Integrated Security=True;TrustServerCertificate=True;");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
-            modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+            //modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
             modelBuilder.Entity<Product>()
             .HasOne<Brand>(s => s.Brand)
             .WithMany(g => g.Products)

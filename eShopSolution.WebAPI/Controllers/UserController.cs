@@ -40,7 +40,7 @@ namespace eShopSolution.WebAPI.Controllers
             {
                 return StatusCode(500, new { IsSuccess = false, Errors = emailResult.Error });
             }
-            return StatusCode(200, new { IsSuccess = false, Message = "Check Mail To Confirm Email" });
+            return StatusCode(200, new { IsSuccess = true, Message = "Check Mail To Confirm Email" });
         }
 
         [HttpPost("SendVerifiedAgain")]
