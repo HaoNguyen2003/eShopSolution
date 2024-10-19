@@ -107,13 +107,6 @@ namespace eShopSolution.DataLayer.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "515155a9-5b64-4957-8ea0-06a84715246c",
-                            RoleId = "45deb9d6-c1ae-44a6-a03b-c9a5cfc15f2f"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

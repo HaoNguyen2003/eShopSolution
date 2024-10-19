@@ -12,8 +12,8 @@ using eShopSolution.DataLayer.Context;
 namespace eShopSolution.DataLayer.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240620190252_UndoCreateDateProduct")]
-    partial class UndoCreateDateProduct
+    [Migration("20241019150528_InitDb")]
+    partial class InitDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,33 +24,6 @@ namespace eShopSolution.DataLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
@@ -166,7 +139,11 @@ namespace eShopSolution.DataLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<string>("City")
+                    b.Property<string>("AddressInfo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConsigneeName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -174,11 +151,18 @@ namespace eShopSolution.DataLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DistrictName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("State")
+                    b.Property<int>("ProvinceID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProvinceName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -186,15 +170,22 @@ namespace eShopSolution.DataLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Ward")
+                    b.Property<string>("WardCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WardName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("districtID")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Address");
+                    b.ToTable("AddressShipInfo");
                 });
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Advertisements", b =>
@@ -235,6 +226,60 @@ namespace eShopSolution.DataLayer.Migrations
                     b.ToTable("Advertisements");
                 });
 
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.AppRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "639de93f-7876-4fff-96ec-37f8db3bf180",
+                            Description = "The Customer role for the user",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        },
+                        new
+                        {
+                            Id = "45deb9d6-c1ae-44a6-a03b-c9a5cfc15f2f",
+                            Description = "The Admin role for the user",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "45deb9d6-c1ae-54a6-a03b-c9a5cfc15d2f",
+                            Description = "The Staff role for the user",
+                            Name = "Staff",
+                            NormalizedName = "STAFF"
+                        });
+                });
+
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.AppUser", b =>
                 {
                     b.Property<string>("Id")
@@ -248,7 +293,6 @@ namespace eShopSolution.DataLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -283,10 +327,6 @@ namespace eShopSolution.DataLayer.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -295,6 +335,9 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("PublicID")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -319,6 +362,57 @@ namespace eShopSolution.DataLayer.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.AspNetMenu", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("URL")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("icon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("AspNetMenu");
+                });
+
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.AspNetRoleAccess", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("MenuPermissionID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RoleID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("RoleID");
+
+                    b.HasIndex("MenuPermissionID", "RoleID")
+                        .IsUnique();
+
+                    b.ToTable("AspNetRoleAccess");
+                });
+
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Brand", b =>
                 {
                     b.Property<int>("BrandID")
@@ -333,6 +427,9 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Property<string>("ImageURL")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublicID")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BrandID");
@@ -354,6 +451,9 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Property<string>("ImageURL")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublicID")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CategoryID");
@@ -384,6 +484,23 @@ namespace eShopSolution.DataLayer.Migrations
                     b.ToTable("CategoryAndBrand");
                 });
 
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.ChatRoom", b =>
+                {
+                    b.Property<int>("ChatRoomID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChatRoomID"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ChatRoomID");
+
+                    b.ToTable("ChatRoom");
+                });
+
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Colors", b =>
                 {
                     b.Property<int>("ID")
@@ -405,7 +522,7 @@ namespace eShopSolution.DataLayer.Migrations
                     b.ToTable("Colors");
                 });
 
-            modelBuilder.Entity("eShopSolution.EntityLayer.Data.Comment", b =>
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.Comments", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -413,15 +530,20 @@ namespace eShopSolution.DataLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<DateTime>("CommentDate")
+                    b.Property<DateTime?>("CommentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("CommentUpdate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("DisplayCommentLevelID")
+                        .HasColumnType("int");
+
                     b.Property<int?>("ParentCommentID")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int>("ProductID")
@@ -439,7 +561,7 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.DetailOrder", b =>
@@ -491,6 +613,96 @@ namespace eShopSolution.DataLayer.Migrations
                     b.ToTable("Gender");
                 });
 
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.InfoPayment", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("OrderID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TransactionNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TxnRef")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserCreateBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("InfoPayment");
+                });
+
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.MenuPermission", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("FunctionName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MenuID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PermissionID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("PermissionID");
+
+                    b.HasIndex("MenuID", "PermissionID")
+                        .IsUnique();
+
+                    b.ToTable("MenuPermission");
+                });
+
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.MessageChat", b =>
+                {
+                    b.Property<int>("MessageID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageID"));
+
+                    b.Property<int>("ChatRoomID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("MessageID");
+
+                    b.HasIndex("ChatRoomID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Message");
+                });
+
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Order", b =>
                 {
                     b.Property<int>("OrderID")
@@ -501,6 +713,9 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Property<int>("AddressID")
                         .HasColumnType("int");
+
+                    b.Property<double>("FeeShip")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
@@ -513,6 +728,12 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Property<int>("ShippingProviderID")
                         .HasColumnType("int");
+
+                    b.Property<double>("Subtotal")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Total")
+                        .HasColumnType("float");
 
                     b.Property<string>("UserID")
                         .IsRequired()
@@ -565,6 +786,23 @@ namespace eShopSolution.DataLayer.Migrations
                     b.HasKey("PaymentMethodID");
 
                     b.ToTable("PaymentMethod");
+                });
+
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.Permission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("PermissionName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Permission");
                 });
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Product", b =>
@@ -653,16 +891,16 @@ namespace eShopSolution.DataLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<string>("Alttext")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ImageURL")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProductColorID")
                         .HasColumnType("int");
+
+                    b.Property<string>("PublicID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
 
@@ -679,7 +917,7 @@ namespace eShopSolution.DataLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReviewID"));
 
-                    b.Property<int>("OrderID")
+                    b.Property<int>("DetailOrderID")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductID")
@@ -687,6 +925,10 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
+
+                    b.Property<string>("Review")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ReviewDate")
                         .HasColumnType("datetime2");
@@ -697,7 +939,7 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.HasKey("ReviewID");
 
-                    b.HasIndex("OrderID");
+                    b.HasIndex("DetailOrderID");
 
                     b.HasIndex("ProductID");
 
@@ -729,7 +971,7 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.HasIndex("SizeID");
 
-                    b.ToTable("productSizeInventories");
+                    b.ToTable("ProductSizeInventory");
                 });
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Return", b =>
@@ -827,9 +1069,57 @@ namespace eShopSolution.DataLayer.Migrations
                     b.ToTable("Sizes");
                 });
 
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.UserChatRoom", b =>
+                {
+                    b.Property<int>("UserChatRoomID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserChatRoomID"));
+
+                    b.Property<int>("ChatRoomID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserChatRoomID");
+
+                    b.HasIndex("ChatRoomID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UserChatRoom");
+                });
+
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.UserRefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Expiration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserRefreshToken");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("eShopSolution.EntityLayer.Data.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -856,7 +1146,7 @@ namespace eShopSolution.DataLayer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("eShopSolution.EntityLayer.Data.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -889,6 +1179,25 @@ namespace eShopSolution.DataLayer.Migrations
                     b.Navigation("AppUser");
                 });
 
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.AspNetRoleAccess", b =>
+                {
+                    b.HasOne("eShopSolution.EntityLayer.Data.MenuPermission", "MenuPermission")
+                        .WithMany("AspNetRoleAccesses")
+                        .HasForeignKey("MenuPermissionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("eShopSolution.EntityLayer.Data.AppRole", "AppRole")
+                        .WithMany("AspNetRoleAccesses")
+                        .HasForeignKey("RoleID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppRole");
+
+                    b.Navigation("MenuPermission");
+                });
+
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.CategoryAndBrand", b =>
                 {
                     b.HasOne("eShopSolution.EntityLayer.Data.Brand", "Brand")
@@ -908,24 +1217,23 @@ namespace eShopSolution.DataLayer.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("eShopSolution.EntityLayer.Data.Comment", b =>
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.Comments", b =>
                 {
-                    b.HasOne("eShopSolution.EntityLayer.Data.Comment", "ParentComment")
+                    b.HasOne("eShopSolution.EntityLayer.Data.Comments", "ParentComment")
                         .WithMany("Replies")
                         .HasForeignKey("ParentCommentID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("eShopSolution.EntityLayer.Data.Product", "Product")
                         .WithMany("Comments")
                         .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("eShopSolution.EntityLayer.Data.AppUser", "AppUser")
                         .WithMany("Comments")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("AppUser");
@@ -952,6 +1260,44 @@ namespace eShopSolution.DataLayer.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("ProductSizeInventory");
+                });
+
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.MenuPermission", b =>
+                {
+                    b.HasOne("eShopSolution.EntityLayer.Data.AspNetMenu", "AspNetMenu")
+                        .WithMany("MenuPermissions")
+                        .HasForeignKey("MenuID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("eShopSolution.EntityLayer.Data.Permission", "Permission")
+                        .WithMany("MenuPermissions")
+                        .HasForeignKey("PermissionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AspNetMenu");
+
+                    b.Navigation("Permission");
+                });
+
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.MessageChat", b =>
+                {
+                    b.HasOne("eShopSolution.EntityLayer.Data.ChatRoom", "ChatRoom")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatRoomID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("eShopSolution.EntityLayer.Data.AppUser", "User")
+                        .WithMany("Messages")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChatRoom");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Order", b =>
@@ -1056,9 +1402,9 @@ namespace eShopSolution.DataLayer.Migrations
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.ProductReview", b =>
                 {
-                    b.HasOne("eShopSolution.EntityLayer.Data.Order", "Order")
+                    b.HasOne("eShopSolution.EntityLayer.Data.DetailOrder", "DetailOrder")
                         .WithMany("ProductReviews")
-                        .HasForeignKey("OrderID")
+                        .HasForeignKey("DetailOrderID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1076,7 +1422,7 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Navigation("AppUser");
 
-                    b.Navigation("Order");
+                    b.Navigation("DetailOrder");
 
                     b.Navigation("Product");
                 });
@@ -1138,9 +1484,33 @@ namespace eShopSolution.DataLayer.Migrations
                     b.Navigation("Return");
                 });
 
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.UserChatRoom", b =>
+                {
+                    b.HasOne("eShopSolution.EntityLayer.Data.ChatRoom", "ChatRoom")
+                        .WithMany("UserChatRooms")
+                        .HasForeignKey("ChatRoomID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("eShopSolution.EntityLayer.Data.AppUser", "User")
+                        .WithMany("UserChatRooms")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChatRoom");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Address", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.AppRole", b =>
+                {
+                    b.Navigation("AspNetRoleAccesses");
                 });
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.AppUser", b =>
@@ -1149,11 +1519,20 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Navigation("Comments");
 
+                    b.Navigation("Messages");
+
                     b.Navigation("Orders");
 
                     b.Navigation("ProductReviews");
 
                     b.Navigation("Returns");
+
+                    b.Navigation("UserChatRooms");
+                });
+
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.AspNetMenu", b =>
+                {
+                    b.Navigation("MenuPermissions");
                 });
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Brand", b =>
@@ -1170,18 +1549,27 @@ namespace eShopSolution.DataLayer.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.ChatRoom", b =>
+                {
+                    b.Navigation("Messages");
+
+                    b.Navigation("UserChatRooms");
+                });
+
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Colors", b =>
                 {
                     b.Navigation("ProductColors");
                 });
 
-            modelBuilder.Entity("eShopSolution.EntityLayer.Data.Comment", b =>
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.Comments", b =>
                 {
                     b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.DetailOrder", b =>
                 {
+                    b.Navigation("ProductReviews");
+
                     b.Navigation("ReturnDetails");
                 });
 
@@ -1190,11 +1578,14 @@ namespace eShopSolution.DataLayer.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.MenuPermission", b =>
+                {
+                    b.Navigation("AspNetRoleAccesses");
+                });
+
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Order", b =>
                 {
                     b.Navigation("DetailOrders");
-
-                    b.Navigation("ProductReviews");
 
                     b.Navigation("Returns");
                 });
@@ -1207,6 +1598,11 @@ namespace eShopSolution.DataLayer.Migrations
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.PaymentMethod", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("eShopSolution.EntityLayer.Data.Permission", b =>
+                {
+                    b.Navigation("MenuPermissions");
                 });
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Product", b =>

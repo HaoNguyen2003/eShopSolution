@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace eShopSolution.DataLayer.Migrations
 {
@@ -30,10 +33,27 @@ namespace eShopSolution.DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AspNetMenu",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    icon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    URL = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetMenu", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -50,12 +70,12 @@ namespace eShopSolution.DataLayer.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PublicID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -80,7 +100,8 @@ namespace eShopSolution.DataLayer.Migrations
                     BrandID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BrandName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PublicID = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -94,11 +115,25 @@ namespace eShopSolution.DataLayer.Migrations
                     CategoryID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageURL = table.Column<int>(type: "int", nullable: false)
+                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PublicID = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Category", x => x.CategoryID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChatRoom",
+                columns: table => new
+                {
+                    ChatRoomID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChatRoom", x => x.ChatRoomID);
                 });
 
             migrationBuilder.CreateTable(
@@ -129,6 +164,22 @@ namespace eShopSolution.DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "InfoPayment",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderID = table.Column<int>(type: "int", nullable: false),
+                    TxnRef = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TransactionNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserCreateBy = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InfoPayment", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderStatus",
                 columns: table => new
                 {
@@ -155,6 +206,19 @@ namespace eShopSolution.DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Permission",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PermissionName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Permission", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ShippingProvider",
                 columns: table => new
                 {
@@ -173,11 +237,26 @@ namespace eShopSolution.DataLayer.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sizes", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserRefreshToken",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Expiration = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRefreshToken", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -202,23 +281,28 @@ namespace eShopSolution.DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Address",
+                name: "AddressShipInfo",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    State = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Ward = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ProvinceID = table.Column<int>(type: "int", nullable: false),
+                    ProvinceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    districtID = table.Column<int>(type: "int", nullable: false),
+                    DistrictName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WardCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WardName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressInfo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ConsigneeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Address", x => x.ID);
+                    table.PrimaryKey("PK_AddressShipInfo", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Address_AspNetUsers_UserID",
+                        name: "FK_AddressShipInfo_AspNetUsers_UserID",
                         column: x => x.UserID,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -314,12 +398,14 @@ namespace eShopSolution.DataLayer.Migrations
                 name: "CategoryAndBrand",
                 columns: table => new
                 {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     BrandID = table.Column<int>(type: "int", nullable: false),
                     CategoryID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryAndBrand", x => new { x.BrandID, x.CategoryID });
+                    table.PrimaryKey("PK_CategoryAndBrand", x => x.ID);
                     table.ForeignKey(
                         name: "FK_CategoryAndBrand_Brand_BrandID",
                         column: x => x.BrandID,
@@ -331,6 +417,61 @@ namespace eShopSolution.DataLayer.Migrations
                         column: x => x.CategoryID,
                         principalTable: "Category",
                         principalColumn: "CategoryID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Message",
+                columns: table => new
+                {
+                    MessageID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ChatRoomID = table.Column<int>(type: "int", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Message", x => x.MessageID);
+                    table.ForeignKey(
+                        name: "FK_Message_AspNetUsers_UserID",
+                        column: x => x.UserID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Message_ChatRoom_ChatRoomID",
+                        column: x => x.ChatRoomID,
+                        principalTable: "ChatRoom",
+                        principalColumn: "ChatRoomID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserChatRoom",
+                columns: table => new
+                {
+                    UserChatRoomID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ChatRoomID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserChatRoom", x => x.UserChatRoomID);
+                    table.ForeignKey(
+                        name: "FK_UserChatRoom_AspNetUsers_UserID",
+                        column: x => x.UserID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserChatRoom_ChatRoom_ChatRoomID",
+                        column: x => x.ChatRoomID,
+                        principalTable: "ChatRoom",
+                        principalColumn: "ChatRoomID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -376,6 +517,33 @@ namespace eShopSolution.DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MenuPermission",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MenuID = table.Column<int>(type: "int", nullable: false),
+                    PermissionID = table.Column<int>(type: "int", nullable: false),
+                    FunctionName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MenuPermission", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_MenuPermission_AspNetMenu_MenuID",
+                        column: x => x.MenuID,
+                        principalTable: "AspNetMenu",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MenuPermission_Permission_PermissionID",
+                        column: x => x.PermissionID,
+                        principalTable: "Permission",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Order",
                 columns: table => new
                 {
@@ -386,15 +554,18 @@ namespace eShopSolution.DataLayer.Migrations
                     PaymentMethodID = table.Column<int>(type: "int", nullable: false),
                     OrderStatusID = table.Column<int>(type: "int", nullable: false),
                     ShippingProviderID = table.Column<int>(type: "int", nullable: false),
+                    FeeShip = table.Column<double>(type: "float", nullable: false),
+                    Subtotal = table.Column<double>(type: "float", nullable: false),
+                    Total = table.Column<double>(type: "float", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Order", x => x.OrderID);
                     table.ForeignKey(
-                        name: "FK_Order_Address_AddressID",
+                        name: "FK_Order_AddressShipInfo_AddressID",
                         column: x => x.AddressID,
-                        principalTable: "Address",
+                        principalTable: "AddressShipInfo",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -424,38 +595,37 @@ namespace eShopSolution.DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "Comments",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProductID = table.Column<int>(type: "int", nullable: false),
-                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CommentUpdate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ParentCommentID = table.Column<int>(type: "int", nullable: false)
+                    ParentCommentID = table.Column<int>(type: "int", nullable: true),
+                    DisplayCommentLevelID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.ID);
+                    table.PrimaryKey("PK_Comments", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Comment_AspNetUsers_UserID",
+                        name: "FK_Comments_AspNetUsers_UserID",
                         column: x => x.UserID,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Comment_Comment_ParentCommentID",
+                        name: "FK_Comments_Comments_ParentCommentID",
                         column: x => x.ParentCommentID,
-                        principalTable: "Comment",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        principalTable: "Comments",
+                        principalColumn: "ID");
                     table.ForeignKey(
-                        name: "FK_Comment_Product_ProductID",
+                        name: "FK_Comments_Product_ProductID",
                         column: x => x.ProductID,
                         principalTable: "Product",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
@@ -485,36 +655,27 @@ namespace eShopSolution.DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductReview",
+                name: "AspNetRoleAccess",
                 columns: table => new
                 {
-                    ReviewID = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProductID = table.Column<int>(type: "int", nullable: false),
-                    OrderID = table.Column<int>(type: "int", nullable: false),
-                    ReviewDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Rating = table.Column<int>(type: "int", nullable: false)
+                    RoleID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MenuPermissionID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductReview", x => x.ReviewID);
+                    table.PrimaryKey("PK_AspNetRoleAccess", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_ProductReview_AspNetUsers_UserID",
-                        column: x => x.UserID,
-                        principalTable: "AspNetUsers",
+                        name: "FK_AspNetRoleAccess_AspNetRoles_RoleID",
+                        column: x => x.RoleID,
+                        principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductReview_Order_OrderID",
-                        column: x => x.OrderID,
-                        principalTable: "Order",
-                        principalColumn: "OrderID",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ProductReview_Product_ProductID",
-                        column: x => x.ProductID,
-                        principalTable: "Product",
+                        name: "FK_AspNetRoleAccess_MenuPermission_MenuPermissionID",
+                        column: x => x.MenuPermissionID,
+                        principalTable: "MenuPermission",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -555,7 +716,7 @@ namespace eShopSolution.DataLayer.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductColorID = table.Column<int>(type: "int", nullable: false),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Alttext = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PublicID = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -569,7 +730,7 @@ namespace eShopSolution.DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "productSizeInventories",
+                name: "ProductSizeInventory",
                 columns: table => new
                 {
                     ProductSizeInventoryID = table.Column<int>(type: "int", nullable: false)
@@ -580,15 +741,15 @@ namespace eShopSolution.DataLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_productSizeInventories", x => x.ProductSizeInventoryID);
+                    table.PrimaryKey("PK_ProductSizeInventory", x => x.ProductSizeInventoryID);
                     table.ForeignKey(
-                        name: "FK_productSizeInventories_ProductColors_ProductColorID",
+                        name: "FK_ProductSizeInventory_ProductColors_ProductColorID",
                         column: x => x.ProductColorID,
                         principalTable: "ProductColors",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_productSizeInventories_Sizes_SizeID",
+                        name: "FK_ProductSizeInventory_Sizes_SizeID",
                         column: x => x.SizeID,
                         principalTable: "Sizes",
                         principalColumn: "ID",
@@ -617,10 +778,46 @@ namespace eShopSolution.DataLayer.Migrations
                         principalColumn: "OrderID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DetailOrder_productSizeInventories_ProductSizeInventoryID",
+                        name: "FK_DetailOrder_ProductSizeInventory_ProductSizeInventoryID",
                         column: x => x.ProductSizeInventoryID,
-                        principalTable: "productSizeInventories",
+                        principalTable: "ProductSizeInventory",
                         principalColumn: "ProductSizeInventoryID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductReview",
+                columns: table => new
+                {
+                    ReviewID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductID = table.Column<int>(type: "int", nullable: false),
+                    DetailOrderID = table.Column<int>(type: "int", nullable: false),
+                    ReviewDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    Review = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductReview", x => x.ReviewID);
+                    table.ForeignKey(
+                        name: "FK_ProductReview_AspNetUsers_UserID",
+                        column: x => x.UserID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductReview_DetailOrder_DetailOrderID",
+                        column: x => x.DetailOrderID,
+                        principalTable: "DetailOrder",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProductReview_Product_ProductID",
+                        column: x => x.ProductID,
+                        principalTable: "Product",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -652,10 +849,31 @@ namespace eShopSolution.DataLayer.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "45deb9d6-c1ae-44a6-a03b-c9a5cfc15f2f", null, "The Admin role for the user", "Admin", "ADMIN" },
+                    { "45deb9d6-c1ae-54a6-a03b-c9a5cfc15d2f", null, "The Staff role for the user", "Staff", "STAFF" },
+                    { "639de93f-7876-4fff-96ec-37f8db3bf180", null, "The Customer role for the user", "Customer", "CUSTOMER" }
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Address_UserID",
-                table: "Address",
+                name: "IX_AddressShipInfo_UserID",
+                table: "AddressShipInfo",
                 column: "UserID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRoleAccess_MenuPermissionID_RoleID",
+                table: "AspNetRoleAccess",
+                columns: new[] { "MenuPermissionID", "RoleID" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRoleAccess_RoleID",
+                table: "AspNetRoleAccess",
+                column: "RoleID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -697,23 +915,28 @@ namespace eShopSolution.DataLayer.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CategoryAndBrand_BrandID",
+                table: "CategoryAndBrand",
+                column: "BrandID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CategoryAndBrand_CategoryID",
                 table: "CategoryAndBrand",
                 column: "CategoryID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_ParentCommentID",
-                table: "Comment",
+                name: "IX_Comments_ParentCommentID",
+                table: "Comments",
                 column: "ParentCommentID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_ProductID",
-                table: "Comment",
+                name: "IX_Comments_ProductID",
+                table: "Comments",
                 column: "ProductID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_UserID",
-                table: "Comment",
+                name: "IX_Comments_UserID",
+                table: "Comments",
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
@@ -725,6 +948,27 @@ namespace eShopSolution.DataLayer.Migrations
                 name: "IX_DetailOrder_ProductSizeInventoryID",
                 table: "DetailOrder",
                 column: "ProductSizeInventoryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MenuPermission_MenuID_PermissionID",
+                table: "MenuPermission",
+                columns: new[] { "MenuID", "PermissionID" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MenuPermission_PermissionID",
+                table: "MenuPermission",
+                column: "PermissionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Message_ChatRoomID",
+                table: "Message",
+                column: "ChatRoomID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Message_UserID",
+                table: "Message",
+                column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_AddressID",
@@ -782,9 +1026,9 @@ namespace eShopSolution.DataLayer.Migrations
                 column: "ProductColorID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductReview_OrderID",
+                name: "IX_ProductReview_DetailOrderID",
                 table: "ProductReview",
-                column: "OrderID");
+                column: "DetailOrderID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductReview_ProductID",
@@ -797,13 +1041,13 @@ namespace eShopSolution.DataLayer.Migrations
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_productSizeInventories_ProductColorID",
-                table: "productSizeInventories",
+                name: "IX_ProductSizeInventory_ProductColorID",
+                table: "ProductSizeInventory",
                 column: "ProductColorID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_productSizeInventories_SizeID",
-                table: "productSizeInventories",
+                name: "IX_ProductSizeInventory_SizeID",
+                table: "ProductSizeInventory",
                 column: "SizeID");
 
             migrationBuilder.CreateIndex(
@@ -825,6 +1069,16 @@ namespace eShopSolution.DataLayer.Migrations
                 name: "IX_ReturnDetail_ReturnID",
                 table: "ReturnDetail",
                 column: "ReturnID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserChatRoom_ChatRoomID",
+                table: "UserChatRoom",
+                column: "ChatRoomID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserChatRoom_UserID",
+                table: "UserChatRoom",
+                column: "UserID");
         }
 
         /// <inheritdoc />
@@ -832,6 +1086,9 @@ namespace eShopSolution.DataLayer.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Advertisements");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoleAccess");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -852,7 +1109,13 @@ namespace eShopSolution.DataLayer.Migrations
                 name: "CategoryAndBrand");
 
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "InfoPayment");
+
+            migrationBuilder.DropTable(
+                name: "Message");
 
             migrationBuilder.DropTable(
                 name: "ProductImages");
@@ -864,6 +1127,15 @@ namespace eShopSolution.DataLayer.Migrations
                 name: "ReturnDetail");
 
             migrationBuilder.DropTable(
+                name: "UserChatRoom");
+
+            migrationBuilder.DropTable(
+                name: "UserRefreshToken");
+
+            migrationBuilder.DropTable(
+                name: "MenuPermission");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -873,7 +1145,16 @@ namespace eShopSolution.DataLayer.Migrations
                 name: "Return");
 
             migrationBuilder.DropTable(
-                name: "productSizeInventories");
+                name: "ChatRoom");
+
+            migrationBuilder.DropTable(
+                name: "AspNetMenu");
+
+            migrationBuilder.DropTable(
+                name: "Permission");
+
+            migrationBuilder.DropTable(
+                name: "ProductSizeInventory");
 
             migrationBuilder.DropTable(
                 name: "Order");
@@ -885,7 +1166,7 @@ namespace eShopSolution.DataLayer.Migrations
                 name: "Sizes");
 
             migrationBuilder.DropTable(
-                name: "Address");
+                name: "AddressShipInfo");
 
             migrationBuilder.DropTable(
                 name: "OrderStatus");
