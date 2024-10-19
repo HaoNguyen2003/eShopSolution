@@ -18,6 +18,7 @@ namespace eShopSolution.WebAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+
         private readonly ISenderEmail _senderEmail;
         private readonly ICloudinaryService _cloudinaryService;
         public UserController(IUserService userService, ISenderEmail senderEmail, ICloudinaryService cloudinaryService)
