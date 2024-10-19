@@ -17,7 +17,7 @@ namespace eShopSolution.WebAPI.Controllers
     [ApiController]
     public class AddressController : ControllerBase
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly  IHttpClientFactory _httpClientFactory;
         private readonly ShippingProvidersConfiguration _shippingProvidersConfiguration;
         private readonly IAddressDeliveryServive _addressDeliveryServive;
         public AddressController(IHttpClientFactory httpClientFactory, IOptions<ShippingProvidersConfiguration> options,IAddressDeliveryServive addressDeliveryServive)
