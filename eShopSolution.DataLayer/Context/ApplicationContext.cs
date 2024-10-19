@@ -14,7 +14,7 @@ namespace eShopSolution.DataLayer.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
-            //modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
             modelBuilder.Entity<Product>()
             .HasOne<Brand>(s => s.Brand)
             .WithMany(g => g.Products)

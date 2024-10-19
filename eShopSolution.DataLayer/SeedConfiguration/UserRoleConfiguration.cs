@@ -11,7 +11,7 @@ namespace eShopSolution.DataLayer.SeedConfiguration
             builder.HasData(
                 new IdentityUserRole<string>
                 {
-                    UserId = "515155a9-5b64-4957-8ea0-06a84715246c",
+                    UserId = "b4d149a3-b621-4853-81e1-d76b805d21a1",
                     RoleId = "45deb9d6-c1ae-44a6-a03b-c9a5cfc15f2f"
                 }
             );
