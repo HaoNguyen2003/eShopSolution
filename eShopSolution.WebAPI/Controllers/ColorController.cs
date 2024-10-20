@@ -36,7 +36,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPost]
-        [PermissionAuthorize("Color.Create")]
+        //[PermissionAuthorize("Color.Create")]
         public async Task<IActionResult> AddColor([FromBody] AddColor addColor)
         {
             if (!ModelState.IsValid)

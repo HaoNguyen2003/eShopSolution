@@ -31,7 +31,7 @@ namespace eShopSolution.BusinessLayer.Service
 
                     foreach (var ID in pendingOrders)
                     {
-                        await _orderService.ConfirmPayMent(ID,7);
+                        await _orderService.ConfirmPayMent(ID,6);
                         await _orderService.UpdateQualityProductInStore(ID);
                     }
                 }
