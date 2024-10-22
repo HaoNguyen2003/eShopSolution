@@ -46,7 +46,7 @@ namespace eShopSolution.BusinessLayer.Service
             return await _colorDal.GetByID(ID);
         }
 
-        public async Task<int> GetIntColorByName(string name)
+        public async Task<List<int>> GetIntColorByName(string name)
         {
             return await _colorDal.GetIntColorByName(name);
         }
