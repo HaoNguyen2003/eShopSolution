@@ -78,26 +78,26 @@ namespace eShopSolution.WebAPI.Controllers
             return StatusCode(result.code, result.Value);
         }
 
-        [HttpGet("GetDetailProductByProductIDAndProductColorID/{ID}/{ProductColorID}")]
-        public async Task<IActionResult> GetDetailProductByProductIDAndColorID(int ID, int ProductColorID)
+        [HttpGet("GetDetailProductByProductIDAndColorID/{ID}/{ColorID}")]
+        public async Task<IActionResult> GetDetailProductByProductIDAndColorID(int ID, int ColorID)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var DetailProduct = await _productService.GetDetailProductByProductIDAndColorID(ID, ProductColorID);
+            var DetailProduct = await _productService.GetDetailProductByProductIDAndColorID(ID, ColorID);
             return StatusCode(DetailProduct.code, DetailProduct.Value);
         }
 
-        [HttpGet("GetProductInDashBoardByProductIDAndProductColorID/{ProductID}/{ProductColorID}")]
-        //[Authorize]
-        public async Task<IActionResult> GetProductInDashBoardByProductIDAndColorID(int ProductID, int ProductColorID)
+        [HttpGet("GetProductInDashBoardByProductIDAndColorID/{ProductID}/{ColorID}")]
+        [Authorize]
+        public async Task<IActionResult> GetProductInDashBoardByProductIDAndColorID(int ProductID, int ColorID)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var ProductDashBoard = await _productService.GetProductInDashBoardByProductIDAndColorID(ProductID, ProductColorID);
+            var ProductDashBoard = await _productService.GetProductInDashBoardByProductIDAndColorID(ProductID, ColorID);
             _logger.LogInformation($"ProductDashBoard: {JsonConvert.SerializeObject(ProductDashBoard.Value)}");
             return StatusCode(ProductDashBoard.code, ProductDashBoard.Value);
         }

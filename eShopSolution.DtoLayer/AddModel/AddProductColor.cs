@@ -7,6 +7,6 @@ namespace eShopSolution.DtoLayer.AddModel
         [Required(ErrorMessage = "Product is Required")]
         public int ProductID { get; set; }
         [Required(ErrorMessage = "Color is Required")]
-        public int ColorCombinationID { get; set; }
+        public int ColorID { get; set; }
     }
 }

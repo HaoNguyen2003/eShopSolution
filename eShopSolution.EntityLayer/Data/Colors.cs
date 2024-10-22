@@ -10,6 +10,6 @@ namespace eShopSolution.EntityLayer.Data
         public int ID { get; set; }
         public string Name { get; set; }
         public string HexValue { get; set; }
-        public virtual ICollection<ColorCombinationColor> ColorCombinationColors { get; set; }
+        public virtual ICollection<ProductColors> ProductColors { get; set; }
     }
 }

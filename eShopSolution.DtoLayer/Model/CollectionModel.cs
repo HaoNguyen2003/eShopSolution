@@ -4,7 +4,7 @@ namespace eShopSolution.DtoLayer.Model
 {
     public class CollectionModel
     {
-        public List<int> ColorIDs { get; set; }
+        public int ColorID { get; set; }
         public List<AddDetailQuantityProduct> DetailQuantity { get; set; } = new List<AddDetailQuantityProduct>();
         public List<CloudinaryImageModel> ListImageURL { get; set; } = new List<CloudinaryImageModel>();
     }

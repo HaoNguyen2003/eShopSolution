@@ -132,19 +132,10 @@ builder.Services.AddScoped<IMenuDal, MenuDal>();
 builder.Services.AddScoped<IAspNetRoleAccessService,AspNetRoleAccessService>();
 builder.Services.AddScoped<IAspNetRoleAccessDal, AspNetRoleAccessDal>();
 
-builder.Services.AddScoped<IColorCombinationColorService, ColorCombinationColorService>();
-builder.Services.AddScoped<IColorCombinationColorDal, ColorCombinationColorDal>();
-
-builder.Services.AddScoped<IColorCombinationService, ColorCombinationService>();
-builder.Services.AddScoped<IColorCombinationDal, ColorCombinationDal>();
-
-
 builder.Services.AddScoped<IRBACService, RBACService>();
 
 builder.Services.AddScoped<IInfoPaymentService, InfoService>();
 builder.Services.AddScoped<IInfoDal, InfoDal>();
-
-
 
 builder.Services.AddScoped<ZaloPayService>();
 

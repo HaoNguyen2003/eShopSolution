@@ -33,6 +33,8 @@ namespace eShopSolution.DataLayer.Context
              .HasForeignKey(s => s.GenderID)
              .OnDelete(DeleteBehavior.Cascade);
 
+
+
             modelBuilder.Entity<CategoryAndBrand>()
             .HasOne<Brand>(s => s.Brand)
             .WithMany(g => g.CategoryAndBrands)
@@ -52,28 +54,10 @@ namespace eShopSolution.DataLayer.Context
             .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ProductColors>()
-            .HasOne<ColorCombination>(s => s.ColorCombination)
+            .HasOne<Colors>(s => s.Color)
             .WithMany(g => g.ProductColors)
-            .HasForeignKey(s => s.ColorCombinationID)
-            .OnDelete(DeleteBehavior.Cascade);
-
-
-            modelBuilder.Entity<ColorCombinationColor>()
-            .HasOne<ColorCombination>(s => s.ColorCombination)
-            .WithMany(g => g.ColorCombinationColors)
-            .HasForeignKey(s => s.ColorCombinationID)
-            .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<ColorCombinationColor>()
-            .HasOne<Colors>(s => s.Colors)
-            .WithMany(g => g.ColorCombinationColors)
             .HasForeignKey(s => s.ColorID)
             .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<ColorCombinationColor>()
-           .HasIndex(mp => new { mp.ColorID, mp.ColorCombinationID })
-           .IsUnique();
-
 
             modelBuilder.Entity<ProductImages>()
             .HasOne<ProductColors>(s => s.ProductColors)
@@ -293,7 +277,5 @@ namespace eShopSolution.DataLayer.Context
         public DbSet<AspNetMenu> aspNetMenus { get; set; }
         public DbSet<AspNetRoleAccess> AspNetRoleAccesses { get; set;}
         public DbSet<MenuPermission> menuPermissions {  get; set; } 
-        public DbSet<ColorCombination> ColorCombinations { get; set; }
-        public DbSet<ColorCombinationColor> ColorCombinationColors { get; set; }
     }
 }

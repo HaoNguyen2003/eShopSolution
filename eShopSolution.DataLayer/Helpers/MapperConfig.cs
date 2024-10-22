@@ -55,7 +55,7 @@ namespace eShopSolution.DataLayer.Helpers
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.HexValue, opt => opt.MapFrom(src => src.HexValue))
             .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
-            .ForMember(dest => dest.ColorCombinationColors, opt => opt.Ignore());
+            .ForMember(dest => dest.ProductColors, opt => opt.Ignore());
 
             CreateMap<Gender, GenderModel>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
@@ -125,14 +125,14 @@ namespace eShopSolution.DataLayer.Helpers
             CreateMap<ProductColors, ProductColorModel>()
            .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
            .ForMember(dest => dest.ProductID, opt => opt.MapFrom(src => src.ProductID))
-           .ForMember(dest => dest.ColorCombinationID, opt => opt.MapFrom(src => src.ColorCombinationID));
+           .ForMember(dest => dest.ColorID, opt => opt.MapFrom(src => src.ColorID));
 
             CreateMap<ProductColorModel, ProductColors>()
            .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
            .ForMember(dest => dest.ProductID, opt => opt.MapFrom(src => src.ProductID))
-           .ForMember(dest => dest.ColorCombinationID, opt => opt.MapFrom(src => src.ColorCombinationID))
+           .ForMember(dest => dest.ColorID, opt => opt.MapFrom(src => src.ColorID))
            .ForMember(dest => dest.Product, opt => opt.Ignore())
-           .ForMember(dest => dest.ColorCombination, opt => opt.Ignore());
+           .ForMember(dest => dest.Color, opt => opt.Ignore());
 
             CreateMap<Product, ProductModel>()
             .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
@@ -179,6 +179,7 @@ namespace eShopSolution.DataLayer.Helpers
            .ForMember(dest => dest.PriceIn, opt => opt.MapFrom(src => src.PriceIn))
            .ForMember(dest => dest.Discount, opt => opt.MapFrom(src => src.Discount))
            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+           .ForMember(dest => dest.Colors, opt => opt.Ignore())
            .ForMember(dest => dest.CollectionProductDashBoard, opt => opt.Ignore());
 
 
@@ -318,8 +319,8 @@ namespace eShopSolution.DataLayer.Helpers
 
 
             CreateMap<InfoPaymentModel, InfoPayment>()
-           .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
-           .ForMember(dest => dest.TxnRef, opt => opt.MapFrom(src => src.TxnRef))
+          .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
+         .ForMember(dest => dest.TxnRef, opt => opt.MapFrom(src => src.TxnRef))
          .ForMember(dest => dest.OrderID, opt => opt.MapFrom(src => src.OrderID))
          .ForMember(dest => dest.TransactionNo, opt => opt.MapFrom(src => src.TransactionNo))
          .ForMember(dest => dest.UserCreateBy, opt => opt.MapFrom(src => src.UserCreateBy));
@@ -393,24 +394,7 @@ namespace eShopSolution.DataLayer.Helpers
               .ForMember(dest => dest.MenuPermissionID, opt => opt.MapFrom(src => src.MenuPermissionID))
               .ForMember(dest => dest.RoleID, opt => opt.MapFrom(src => src.RoleID));
 
-            CreateMap<ColorCombinationModel, ColorCombination>()
-             .ForMember(dest => dest.ID, opt => opt.Ignore())
-             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => ""));
 
-            CreateMap<ColorCombination,ColorCombinationModel>()
-             .ForMember(dest => dest.ID, opt => opt.MapFrom(src=>src.ID))
-             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => ""));
-
-            CreateMap<ColorCombinationColorModel, ColorCombinationColor>()
-             .ForMember(dest => dest.ID, opt => opt.Ignore())
-             .ForMember(dest => dest.ColorCombinationID, opt => opt.MapFrom(src => src.ColorCombinationID))
-             .ForMember(dest => dest.ColorID, opt => opt.MapFrom(src => src.ColorID));
-
-
-            CreateMap<ColorCombinationColor,ColorCombinationColorModel>()
-             .ForMember(dest => dest.ID, opt => opt.MapFrom(src=>src.ID))
-             .ForMember(dest => dest.ColorCombinationID, opt => opt.MapFrom(src => src.ColorCombinationID))
-             .ForMember(dest => dest.ColorID, opt => opt.MapFrom(src => src.ColorID));
         }
     }
 }

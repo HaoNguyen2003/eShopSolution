@@ -505,47 +505,6 @@ namespace eShopSolution.DataLayer.Migrations
                     b.ToTable("ChatRoom");
                 });
 
-            modelBuilder.Entity("eShopSolution.EntityLayer.Data.ColorCombination", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("ColorCombination");
-                });
-
-            modelBuilder.Entity("eShopSolution.EntityLayer.Data.ColorCombinationColor", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<int>("ColorCombinationID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ColorID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("ColorCombinationID");
-
-                    b.HasIndex("ColorID", "ColorCombinationID")
-                        .IsUnique();
-
-                    b.ToTable("ColorCombinationColor");
-                });
-
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Colors", b =>
                 {
                     b.Property<int>("ID")
@@ -913,7 +872,7 @@ namespace eShopSolution.DataLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int>("ColorCombinationID")
+                    b.Property<int>("ColorID")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductID")
@@ -921,7 +880,7 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ColorCombinationID");
+                    b.HasIndex("ColorID");
 
                     b.HasIndex("ProductID");
 
@@ -1262,25 +1221,6 @@ namespace eShopSolution.DataLayer.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("eShopSolution.EntityLayer.Data.ColorCombinationColor", b =>
-                {
-                    b.HasOne("eShopSolution.EntityLayer.Data.ColorCombination", "ColorCombination")
-                        .WithMany("ColorCombinationColors")
-                        .HasForeignKey("ColorCombinationID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("eShopSolution.EntityLayer.Data.Colors", "Colors")
-                        .WithMany("ColorCombinationColors")
-                        .HasForeignKey("ColorID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ColorCombination");
-
-                    b.Navigation("Colors");
-                });
-
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Comments", b =>
                 {
                     b.HasOne("eShopSolution.EntityLayer.Data.Comments", "ParentComment")
@@ -1436,9 +1376,9 @@ namespace eShopSolution.DataLayer.Migrations
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.ProductColors", b =>
                 {
-                    b.HasOne("eShopSolution.EntityLayer.Data.ColorCombination", "ColorCombination")
+                    b.HasOne("eShopSolution.EntityLayer.Data.Colors", "Color")
                         .WithMany("ProductColors")
-                        .HasForeignKey("ColorCombinationID")
+                        .HasForeignKey("ColorID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1448,7 +1388,7 @@ namespace eShopSolution.DataLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ColorCombination");
+                    b.Navigation("Color");
 
                     b.Navigation("Product");
                 });
@@ -1620,16 +1560,9 @@ namespace eShopSolution.DataLayer.Migrations
                     b.Navigation("UserChatRooms");
                 });
 
-            modelBuilder.Entity("eShopSolution.EntityLayer.Data.ColorCombination", b =>
-                {
-                    b.Navigation("ColorCombinationColors");
-
-                    b.Navigation("ProductColors");
-                });
-
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Colors", b =>
                 {
-                    b.Navigation("ColorCombinationColors");
+                    b.Navigation("ProductColors");
                 });
 
             modelBuilder.Entity("eShopSolution.EntityLayer.Data.Comments", b =>

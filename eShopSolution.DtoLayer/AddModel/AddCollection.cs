@@ -7,7 +7,8 @@ namespace eShopSolution.DtoLayer.AddModel
     public class AddCollection
     {
         [Required(ErrorMessage = "ColorID is required.")]
-        public List<int> ColorIDs { get; set; }
+        public int ColorID { get; set; }
+
         [Required(ErrorMessage = "DetailQuantity is required.")]
         public List<AddDetailQuantityProduct> DetailQuantity { get; set; }
         [Required(ErrorMessage = "ListImage is required.")]

@@ -4,6 +4,6 @@
     {
         public int ID { get; set; }
         public int ProductID { get; set; }
-        public int ColorCombinationID { get; set; }
+        public int ColorID { get; set; }
     }
 }

@@ -97,12 +97,12 @@ namespace eShopSolution.WebAPI.Helpers
             CreateMap<AddProductColor, ProductColorModel>()
                .ForMember(dest => dest.ID, opt => opt.Ignore())
                .ForMember(dest => dest.ProductID, opt => opt.MapFrom(src => src.ProductID))
-               .ForMember(dest => dest.ColorCombinationID, opt => opt.MapFrom(src => src.ColorCombinationID));
+               .ForMember(dest => dest.ColorID, opt => opt.MapFrom(src => src.ColorID));
 
             CreateMap<UpdateProductColor, ProductColorModel>()
                 .ForMember(dest => dest.ID, opt => opt.Ignore())
                 .ForMember(dest => dest.ProductID, opt => opt.MapFrom(src => src.ProductID))
-                .ForMember(dest => dest.ColorCombinationID, opt => opt.MapFrom(src => src.ColorCombinationID));
+                .ForMember(dest => dest.ColorID, opt => opt.MapFrom(src => src.ColorID));
 
             CreateMap<AddProduct, ProductModel>()
             .ForMember(dest => dest.ID, opt => opt.Ignore())
@@ -178,7 +178,7 @@ namespace eShopSolution.WebAPI.Helpers
 
             CreateMap<AddCollection, CollectionModel>()
             .ForMember(dest => dest.DetailQuantity, opt => opt.MapFrom(src => src.DetailQuantity))
-            .ForMember(dest => dest.ColorIDs, opt => opt.MapFrom(src => src.ColorIDs))
+            .ForMember(dest => dest.ColorID, opt => opt.MapFrom(src => src.ColorID))
             .ForMember(dest => dest.ListImageURL, opt => opt.Ignore());
 
             CreateMap<AddProductSizeAndColor, DetailQuantityProductModel>()

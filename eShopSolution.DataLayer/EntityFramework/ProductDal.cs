@@ -75,28 +75,9 @@ namespace eShopSolution.DataLayer.EntityFramework
                         _context.ProductColors,
                         p => p.ID,
                         pc => pc.ProductID,
-                        (p, pc) => new { Product = p, ProductColor = pc}
+                        (p, pc) => new { Product = p, ProductColor = pc }
                     )
-                    .Join(
-                    _context.ColorCombinations,       
-                    pc => pc.ProductColor.ColorCombinationID, 
-                    cc => cc.ID,                       
-                    (pc, cc) => new { pc.Product, ProductColor = pc.ProductColor, ColorCombination = cc }
-                    )
-                    .Join(
-                    _context.ColorCombinationColors,   
-                    cc => cc.ColorCombination.ID,      
-                    ccc => ccc.ColorCombinationID,    
-                    (cc, ccc) => new { cc.Product, cc.ProductColor, cc.ColorCombination, ColorCombinationColor = ccc })
-                    .Join(
-                    _context.Colors,
-                    ccc => ccc.ColorCombinationColor.ColorID, 
-                    c => c.ID,                         
-                    (ccc, c) => new { ccc.Product, ccc.ProductColor, ccc.ColorCombination, Color = c }
-                    )
-                    .Where(joined =>
-                    model.ListColorID.Contains(joined.Color.ID) ||  
-                    !model.ListColorID.Any())
+                    .Where(joined => model.ListColorID.Contains(joined.ProductColor.ColorID) || model.ListColorID.Count == 0)
                     .Join(
                         _context.productSizeInventories,
                         j => j.ProductColor.ID,

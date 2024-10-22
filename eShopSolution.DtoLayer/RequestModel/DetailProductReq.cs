@@ -10,6 +10,6 @@ namespace eShopSolution.DtoLayer.RequestModel
     {
         public string Where {  get; set; }
         public int ProductID { get; set; }
-        public int ProductColorID {  get; set; }
+        public int ColorID {  get; set; }
     }
 }
