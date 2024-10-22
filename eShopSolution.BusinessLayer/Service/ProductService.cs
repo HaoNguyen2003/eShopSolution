@@ -5,7 +5,9 @@ using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.RepositoryModel;
 using eShopSolution.DtoLayer.RequestModel;
+using eShopSolution.EntityLayer.Data;
 using Microsoft.Extensions.Caching.Memory;
+using System.Drawing;
 
 namespace eShopSolution.BusinessLayer.Service
 {
@@ -18,10 +20,13 @@ namespace eShopSolution.BusinessLayer.Service
         private readonly IColorDal _colorDal;
         private readonly ISizeDal _sizeDal;
         private readonly ICustomCache<string> _customCache;
+        private readonly IColorCombinationService _colorCombinationService;
+        private readonly IColorCombinationColorService _colorCombinationColorService;
 
         public ProductService(IProductDal productDal, IProductColorDal productColorDal, IProductImageDal productImageDal,
             IProductSizeInventoryDal productSizeInventoryDal, IColorDal colorDal,
-            ISizeDal sizeDal, ICustomCache<string> customCache)
+            ISizeDal sizeDal, ICustomCache<string> customCache,IColorCombinationService colorCombinationService,
+            IColorCombinationColorService colorCombinationColorService)
         {
             _productDal = productDal;
             _productColorDal = productColorDal;
@@ -30,6 +35,8 @@ namespace eShopSolution.BusinessLayer.Service
             _colorDal = colorDal;
             _sizeDal = sizeDal;
             _customCache = customCache;
+            _colorCombinationService = colorCombinationService;
+            _colorCombinationColorService= colorCombinationColorService;
         }
         //----------------------------------------------------------------------------------//
         public async Task<BaseRep<string>> Create(ProductModel model)
@@ -63,13 +70,12 @@ namespace eShopSolution.BusinessLayer.Service
             var productCardModel = await _productDal.GetAllProductConvertToProductCardModel();
             foreach (var item in productCardModel)
             {
-                var listColorID = await _productColorDal.GetColorIDByProductID(item.ID);
-                foreach (int colorID in listColorID)
+                var listProductColorIDs = await _productColorDal.GetProductColorIDByProductID(item.ID);
+                foreach (int ProductColor in listProductColorIDs)
                 {
-                    int ProductColorID = await _productColorDal.GetProductColorByProductIDAndColorID(item.ID, colorID);
                     ColorItemModel colorItemModel = new ColorItemModel();
-                    colorItemModel.ColorID = colorID;
-                    colorItemModel.ImageURL = await _productImageDal.GetImagefirstByID(ProductColorID);
+                    colorItemModel.ProductColorID = ProductColor;
+                    colorItemModel.ImageURL = await _productImageDal.GetImagefirstByID(ProductColor);
                     item.ColorItemModel.Add(colorItemModel);
                 }
             }
@@ -88,7 +94,22 @@ namespace eShopSolution.BusinessLayer.Service
                 {
                     ProductColorModel productColor = new ProductColorModel();
                     productColor.ProductID = ProductID;
-                    productColor.ColorID = item.ColorID;
+
+                    int ColorCombinationID = await _colorCombinationService.GetColorCombinationIdIfExists(item.ColorIDs);
+                    if(ColorCombinationID == -1)
+                    {
+                        ColorCombinationID = await _colorCombinationService.CreateModel(new ColorCombinationModel() { ID = 0, Name = "" });
+                        foreach(var colorID in item.ColorIDs)
+                        {
+                            await _colorCombinationColorService.Create(new ColorCombinationColorModel() 
+                            { ID = 0, ColorCombinationID = ColorCombinationID, ColorID = colorID });
+                        }
+                        productColor.ColorCombinationID = ColorCombinationID;
+                    }
+                    else
+                    {
+                        productColor.ColorCombinationID = ColorCombinationID;
+                    }
                     int ProductColorID = await _productColorDal.CreateProductColorReturnID(productColor);
                     foreach (var image in item.ListImageURL)
                     {
@@ -129,10 +150,10 @@ namespace eShopSolution.BusinessLayer.Service
                 return new BaseRep<string>() { code = 500, Value = "Create Fail: " + ex.Message };
             }
         }
-        public async Task<BaseRep<DetailProduct>> GetDetailProductByProductIDAndColorID(int ID, int ColorID)
+        public async Task<BaseRep<DetailProduct>> GetDetailProductByProductIDAndColorID(int ID, int ProductColorID)
         {
 
-            var detailProduct = _customCache.Get<DetailProduct>(_customCache.GenerateCacheKeyProduct(new DetailProductReq() {ProductID=ID,ColorID= ColorID,Where = "DetailProduct" }));
+            var detailProduct = _customCache.Get<DetailProduct>(_customCache.GenerateCacheKeyProduct(new DetailProductReq() {ProductID=ID,ProductColorID = ProductColorID,Where = "DetailProduct" }));
             if(detailProduct == null)
             {
                 detailProduct = await _productDal.GetDetailProductByID(ID);
@@ -142,36 +163,20 @@ namespace eShopSolution.BusinessLayer.Service
                     return new BaseRep<DetailProduct>() { code = 404, Value = new DetailProduct() };
                 }
                 DetailColorAndProduct detailColorAndProduct = new DetailColorAndProduct();
-                detailColorAndProduct.ColorID = ColorID;
-                int ProductColorID = await _productColorDal.GetProductColorByProductIDAndColorID(ID, ColorID);
+                detailColorAndProduct.ProductColorID = ProductColorID;
                 detailColorAndProduct.ListImageURL = await _productImageDal.GetAllImageByProductColor(ProductColorID);
-                var detailQuantityProductModels = await _productSizeInventoryDal.GetAllDetailQuantityProducByProductColorID(ProductColorID);
-                foreach (var itemDetail in detailQuantityProductModels)
-                {
-                    var detailQuantityProductDisplay = new DetailQuantityProductDisplay
-                    {
-                        SizeID = itemDetail.SizeID,
-                        Quantity = itemDetail.Quantity,
-                        SizeName = (await _sizeDal.GetByID(itemDetail.SizeID)).Value.SizeName ?? "Unknown Size"
-                    };
-                    detailColorAndProduct.DetailQuantity.Add(detailQuantityProductDisplay);
-                }
-                var listColorID = await _productColorDal.GetColorIDByProductID(ID);
-                foreach (var colorID in listColorID)
-                {
-                    ColorItemModel colorItemModel = new ColorItemModel();
-                    colorItemModel.ColorID = colorID;
-                    colorItemModel.ImageURL = await _productImageDal.GetImagefirstByID((await _productColorDal.GetProductColorByProductIDAndColorID(ID, colorID)));
-                    detailProduct.ColorItemModel.Add(colorItemModel);
-                }
+                detailColorAndProduct.DetailQuantity=await GetDetailQuantityByProductColorID(ProductColorID);
+                var resultTuple = await GetColorIDByProductColorID(ProductColorID);
+                detailColorAndProduct.MixColor = resultTuple.Item1;
+                detailProduct.ColorItemModel = await GetColorItemModelsByProductID(ID);
                 detailProduct.collectionModel = detailColorAndProduct;
-                _customCache.Set(key: _customCache.GenerateCacheKeyProduct(new DetailProductReq() { ProductID = ID, ColorID = ColorID, Where = "DetailProduct" }), value: detailProduct, priority: CacheItemPriority.High);
+                _customCache.Set(key: _customCache.GenerateCacheKeyProduct(new DetailProductReq() { ProductID = ID, ProductColorID = ProductColorID, Where = "DetailProduct" }), value: detailProduct, priority: CacheItemPriority.High);
             }
             return new BaseRep<DetailProduct>() { code = 200, Value = detailProduct };
         }
-        public async Task<BaseRep<ProductDashBoard>> GetProductInDashBoardByProductIDAndColorID(int ProductID, int ColorID)
+        public async Task<BaseRep<ProductDashBoard>> GetProductInDashBoardByProductIDAndColorID(int ProductID, int ProductColorID)
         {
-            var ProductDashBoard = _customCache.Get<ProductDashBoard>(_customCache.GenerateCacheKeyProduct(new DetailProductReq() { ProductID = ProductID, ColorID = ColorID, Where = "DashBoardProduct" }));
+            var ProductDashBoard = _customCache.Get<ProductDashBoard>(_customCache.GenerateCacheKeyProduct(new DetailProductReq() { ProductID = ProductID, ProductColorID = ProductColorID, Where = "DashBoardProduct" }));
             if (ProductDashBoard == null)
             {
                 ProductDashBoard = await _productDal.GetProductDashBoardByID(ProductID);
@@ -180,29 +185,14 @@ namespace eShopSolution.BusinessLayer.Service
                     return new BaseRep<ProductDashBoard>() { code = 404, Value = new ProductDashBoard() };
                 }
                 CollectionProductDashBoard collectionProductDashBoard = new CollectionProductDashBoard();
-                collectionProductDashBoard.ColorID = ColorID;
-                int ProductColorID = await _productColorDal.GetProductColorByProductIDAndColorID(ProductID, ColorID);
                 collectionProductDashBoard.ProductColorID = ProductColorID;
                 collectionProductDashBoard.productImageModels = await _productImageDal.GetAllProductImageByProductColor(ProductColorID);
-                var detailQuantityProductModels = await _productSizeInventoryDal.GetAllDetailQuantityProducByProductColorID(ProductColorID);
-                foreach (var itemDetail in detailQuantityProductModels)
-                {
-                    var detailQuantityProductDisplay = new DetailQuantityProductDisplay
-                    {
-                        SizeID = itemDetail.SizeID,
-                        Quantity = itemDetail.Quantity,
-                        SizeName = (await _sizeDal.GetByID(itemDetail.SizeID)).Value.SizeName ?? "Unknown Size"
-                    };
-                    collectionProductDashBoard.SizeAndQuantity.Add(detailQuantityProductDisplay);
-                }
-                var listColorID = await _productColorDal.GetColorIDByProductID(ProductID);
-                foreach (var colorID in listColorID)
-                {
-                    var Color = await _colorDal.GetByID(colorID);
-                    ProductDashBoard.Colors.Add(Color.Value);
-                }
+                collectionProductDashBoard.SizeAndQuantity = await GetDetailQuantityByProductColorID(ProductColorID);
+                ProductDashBoard.colorItemModels = await GetColorItemModelsByProductID(ProductID);
+                var resultTuple = await GetColorIDByProductColorID(ProductColorID);
+                collectionProductDashBoard.Colors = resultTuple.Item2;
                 ProductDashBoard.CollectionProductDashBoard = collectionProductDashBoard;
-                _customCache.Set(key: _customCache.GenerateCacheKeyProduct(new DetailProductReq() { ProductID = ProductID, ColorID = ColorID, Where = "DashBoardProduct" }), value: ProductDashBoard, priority: CacheItemPriority.High);
+                _customCache.Set(key: _customCache.GenerateCacheKeyProduct(new DetailProductReq() { ProductID = ProductID, ProductColorID = ProductColorID, Where = "DashBoardProduct" }), value: ProductDashBoard, priority: CacheItemPriority.High);
             }
             return new BaseRep<ProductDashBoard>() { code = 200, Value = ProductDashBoard };
         }
@@ -215,15 +205,12 @@ namespace eShopSolution.BusinessLayer.Service
                 return new BaseRep<List<string>>() { code = 404, Value = new List<string> { } };
             }
             List<string> ListImg = new List<string>();
-            var ListColorID = await _productColorDal.GetColorIDByProductID(ID);
-            foreach (var colorID in ListColorID)
+            var ListProductColorID = await _productColorDal.GetProductColorIDByProductID(ID);
+            foreach (var ProductColor in ListProductColorID)
             {
-                
-                int ProductColorID = await _productColorDal.GetProductColorByProductIDAndColorID(ID, colorID);
-                var listImgOfProductColorID = await _productImageDal.GetAllPublicIDByProductColor(ProductColorID);
+                var listImgOfProductColorID = await _productImageDal.GetAllPublicIDByProductColor(ProductColor);
                 ListImg.AddRange(listImgOfProductColorID);
             }
-
             var resultDeleteProduct = await _productDal.Delete(ID);
             if (resultDeleteProduct.code == 200)
             {
@@ -250,7 +237,7 @@ namespace eShopSolution.BusinessLayer.Service
                     {
                         int ProductColorID = await _productColorDal.GetProductColorByProductIDAndColorID(item.ID, colorID);
                         ColorItemModel colorItemModel = new ColorItemModel();
-                        colorItemModel.ColorID = colorID;
+                        colorItemModel.ProductColorID = ProductColorID;
                         colorItemModel.ImageURL = await _productImageDal.GetImagefirstByID(ProductColorID);
                         item.ColorItemModel.Add(colorItemModel);
                     }
@@ -267,7 +254,6 @@ namespace eShopSolution.BusinessLayer.Service
             }
             return new BaseRep<PagedResult>() { code = 200, Value = pagedResult };
         }
-
         public async Task<BaseRep<string>> CreateProduct(ProductModel productModel, List<ProductDataNew> collectionModels)
         {
             int ProductID = await _productDal.CreateProduct(productModel);
@@ -281,13 +267,22 @@ namespace eShopSolution.BusinessLayer.Service
                 {
                     ProductColorModel productColor = new ProductColorModel();
                     productColor.ProductID = ProductID;
-                    var ColorID = await _colorDal.GetIntColorByName(item.Color);
-                    if (ColorID == 0)
+                    var ListColorID = await _colorDal.GetIntColorByName(item.Color);
+                    int ColorCombinationID = await _colorCombinationService.GetColorCombinationIdIfExists(ListColorID);
+                    if (ColorCombinationID == -1)
                     {
-                        var color = await _colorDal.Create(new ColorModel() { Name = item.Color, HexValue = item.Color});
-                        ColorID = await _colorDal.GetIntColorByName(item.Color);
+                        ColorCombinationID = await _colorCombinationService.CreateModel(new ColorCombinationModel() { ID = 0, Name = "" });
+                        foreach (var colorID in ListColorID)
+                        {
+                            await _colorCombinationColorService.Create(new ColorCombinationColorModel()
+                            { ID = 0, ColorCombinationID = ColorCombinationID, ColorID = colorID });
+                        }
+                        productColor.ColorCombinationID = ColorCombinationID;
                     }
-                    productColor.ColorID = ColorID;
+                    else
+                    {
+                        productColor.ColorCombinationID = ColorCombinationID;
+                    }
                     int ProductColorID = await _productColorDal.CreateProductColorReturnID(productColor);
                     foreach (var image in item.ListImageURL)
                     {
@@ -327,6 +322,60 @@ namespace eShopSolution.BusinessLayer.Service
                 await _productDal.Delete(ProductID);
                 return new BaseRep<string>() { code = 500, Value = "Create Fail: " + ex.Message };
             }
+        }
+        private async Task<List<DetailQuantityProductDisplay>> GetDetailQuantityByProductColorID(int ProductColorID)
+        {
+            var detailQuantityProductModels = await _productSizeInventoryDal.GetAllDetailQuantityProducByProductColorID(ProductColorID);
+            var detailQuantities = new List<DetailQuantityProductDisplay>();
+
+            foreach (var itemDetail in detailQuantityProductModels)
+            {
+                var detailQuantityProductDisplay = new DetailQuantityProductDisplay
+                {
+                    SizeID = itemDetail.SizeID,
+                    Quantity = itemDetail.Quantity,
+                    SizeName = (await _sizeDal.GetByID(itemDetail.SizeID)).Value.SizeName ?? "Unknown Size"
+                };
+                detailQuantities.Add(detailQuantityProductDisplay);
+            }
+
+            return detailQuantities;
+        }
+
+        private async Task<List<ColorItemModel>> GetColorItemModelsByProductID(int ProductID)
+        {
+            var listProductColorIDs = await _productColorDal.GetProductColorIDByProductID(ProductID);
+            var colorItemModels = new List<ColorItemModel>();
+
+            foreach (var productColorID in listProductColorIDs)
+            {
+                var colorItemModel = new ColorItemModel
+                {
+                    ProductColorID = productColorID,
+                    ImageURL = await _productImageDal.GetImagefirstByID(productColorID)
+                };
+                colorItemModels.Add(colorItemModel);
+            }
+
+            return colorItemModels;
+        }        
+
+        private async Task<Tuple<string, List<ColorModel>>> GetColorIDByProductColorID(int ProductColorID)
+        {
+           List<ColorModel> colorModels = new List<ColorModel>();
+           string MixColor = "";
+           var listColorID = await _productColorDal.GetColorIDByProductColorID(ProductColorID);
+            foreach (var colorID in listColorID)
+            {
+                var Color = await _colorDal.GetByID(colorID);
+                MixColor += Color.Value.Name + "/";
+                colorModels.Add(Color.Value);
+            }
+            if (MixColor.Length > 0)
+            {
+                MixColor = MixColor.TrimEnd('/', ' ');
+            }
+            return Tuple.Create(MixColor, colorModels);
         }
     }
 }
