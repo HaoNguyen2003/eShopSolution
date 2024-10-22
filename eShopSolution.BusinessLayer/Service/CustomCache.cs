@@ -72,7 +72,7 @@ namespace eShopSolution.BusinessLayer.Service
             var keyBuilder = new StringBuilder();
             keyBuilder.Append($"Where:{detailProductReq.Where}");
             keyBuilder.Append($"ProductID:{detailProductReq.ProductID}");
-            keyBuilder.Append($"ColorID:{detailProductReq.ColorID}");
+            keyBuilder.Append($"ProductColorID:{detailProductReq.ProductColorID}");
             return keyBuilder.ToString();
         }
         public string GenerateCacheKey(FilterModel model, int page, int limit)
