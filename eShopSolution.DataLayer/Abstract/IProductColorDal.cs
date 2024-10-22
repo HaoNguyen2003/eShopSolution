@@ -10,6 +10,8 @@ namespace eShopSolution.DataLayer.Abstract
         public Task<BaseRep<string>> CreateProductColor(ProductColorModel model);
         public Task<int> CreateProductColorReturnID(ProductColorModel model);
         public Task<List<int>> GetColorIDByProductID(int productID);
+        public Task<List<int>>GetColorIDByProductColorID(int productColorID);
+        public Task<List<int>> GetProductColorIDByProductID(int productID);
         public Task<int> GetProductColorByProductIDAndColorID(int productID, int colorID);
 
     }
