@@ -38,6 +38,6 @@ namespace eShopSolution.CrawlData.Model
     public class ProductDataInfomation
     {
         public DataInfomation ProductInfo { get; set; }
-        public List<ProductWayData> ProductwayData { get; set; }
+        public List<ProductWayData> ProductwayData { get; set; } = new List<ProductWayData> { };
     }
 }
