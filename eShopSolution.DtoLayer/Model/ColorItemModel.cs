@@ -2,7 +2,7 @@
 {
     public class ColorItemModel
     {
-        public int ColorID { get; set; }
+        public int ProductColorID { get; set; }
         public string ImageURL { get; set; }
     }
 }

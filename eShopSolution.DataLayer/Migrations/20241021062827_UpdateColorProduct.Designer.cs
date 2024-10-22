@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eShopSolution.DataLayer.Context;
 
@@ -11,9 +12,11 @@ using eShopSolution.DataLayer.Context;
 namespace eShopSolution.DataLayer.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20241021062827_UpdateColorProduct")]
+    partial class UpdateColorProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -923,7 +926,8 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.HasIndex("ColorCombinationID");
 
-                    b.HasIndex("ProductID");
+                    b.HasIndex("ProductID", "ColorCombinationID")
+                        .IsUnique();
 
                     b.ToTable("ProductColors");
                 });
@@ -1272,7 +1276,7 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.HasOne("eShopSolution.EntityLayer.Data.Colors", "Colors")
                         .WithMany("ColorCombinationColors")
-                        .HasForeignKey("ColorID")
+                        .HasForeignKey("ColorCombinationID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
