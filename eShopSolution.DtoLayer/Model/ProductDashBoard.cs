@@ -13,6 +13,6 @@
         public decimal Discount { get; set; }
         public string Description { get; set; }
         public CollectionProductDashBoard? CollectionProductDashBoard { get; set; } = new CollectionProductDashBoard();
-        public List<ColorModel> Colors { get; set; } = new List<ColorModel>();
+        public List<ColorItemModel> colorItemModels { get; set; } = new List<ColorItemModel>();
     }
 }
