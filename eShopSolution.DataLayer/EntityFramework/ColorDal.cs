@@ -12,17 +12,17 @@ namespace eShopSolution.DataLayer.EntityFramework
         public ColorDal(ApplicationContext context, IMapper mapper) : base(context, mapper)
         {
         }
-        public async Task<int>GetIntColorByName(string name)
+        public async Task<List<int>>GetIntColorByName(string name)
         {
-            var ColorID = await _context.Colors
-                             .Where(c => c.Name.ToLower() == name.ToLower())
+            var ColorIDList = await _context.Colors
+                             .Where(c => name.ToLower().Contains(c.Name.ToLower()))
                              .Select(c => c.ID)
-                             .FirstOrDefaultAsync();
-            if (ColorID == 0)
+                             .ToListAsync();
+            if (!ColorIDList.Any())
             {
-                return 0;
+                return new List<int>(); 
             }
-            return ColorID;
+            return ColorIDList;
 
         }
     }
