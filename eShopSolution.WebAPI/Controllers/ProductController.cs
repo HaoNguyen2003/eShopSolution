@@ -20,12 +20,15 @@ namespace eShopSolution.WebAPI.Controllers
         private readonly IProductService _productService;
         private readonly ILogger<ProductController> _logger;
         private readonly ICloudinaryService _cloudinaryService;
-        public ProductController(IMapper mapper, IProductService productService, ILogger<ProductController> logger, ICloudinaryService cloudinaryService)
+        private readonly IServiceProvider _serviceProvider;
+
+        public ProductController(IMapper mapper, IProductService productService, ILogger<ProductController> logger, ICloudinaryService cloudinaryService,IServiceProvider serviceProvider)
         {
             _mapper = mapper;
             _productService = productService;
             _logger = logger;
             _cloudinaryService = cloudinaryService;
+            _serviceProvider = serviceProvider;
         }
 
         [HttpPost("AddProduct")]
@@ -39,37 +42,49 @@ namespace eShopSolution.WebAPI.Controllers
             List<CollectionModel> collectionModels = new List<CollectionModel>();
             foreach (var collectionModel in ListCollection)
             {
-                foreach (var fileModel in collectionModel.ListImage)
+                if (collectionModel.ListImage.Any(fileModel => !WorkWithFile.IsImage(fileModel)))
                 {
-                    if (!WorkWithFile.IsImage(fileModel))
-                    {
-                        return StatusCode(500, "There exists a file that is not an image");
-                    }
+                    return StatusCode(500, "There exists a file that is not an image");
                 }
-            }
-            foreach (var collectionModel in ListCollection)
-            {
                 var model = _mapper.Map<CollectionModel>(collectionModel);
-                foreach (var fileModel in collectionModel.ListImage)
+                var imageUploadTasks = collectionModel.ListImage.Select(async fileModel =>
                 {
                     var resultImage = await _cloudinaryService.UploadFile(fileModel, "ImageEshop/Product");
                     if (resultImage.IsSuccess)
-                        model.ListImageURL.Add(new CloudinaryImageModel() { ImageURL = resultImage.Url, PublicID = resultImage.PublicID });
+                    {
+                        model.ListImageURL.Add(new CloudinaryImageModel
+                        {
+                            ImageURL = resultImage.Url,
+                            PublicID = resultImage.PublicID
+                        });
+                    }
+                    return resultImage.IsSuccess;
+                });
+                var uploadResults = await Task.WhenAll(imageUploadTasks);
+                if (uploadResults.Any(success => !success))
+                {
+                    return StatusCode(500, "Some images failed to upload.");
                 }
                 collectionModels.Add(model);
             }
-            var result = await _productService.CreateProduct(productModel, collectionModels);
-            if (result.code != 200)
+            using (var scope = _serviceProvider.CreateScope())
             {
-                foreach (var item in collectionModels)
+                var scopedProductService = scope.ServiceProvider.GetRequiredService<IProductService>();
+                var result = await scopedProductService.CreateProduct(productModel, null, collectionModels);
+
+                if (result.code != 200)
                 {
-                    foreach (var listURL in item.ListImageURL)
+                    var publicIdsToRemove = collectionModels.SelectMany(item => item.ListImageURL)
+                                            .Select(img => img.PublicID)
+                                            .ToList();
+                    foreach (var publicId in publicIdsToRemove)
                     {
-                        _cloudinaryService.RemoveFile(listURL.PublicID);
+                        _cloudinaryService.RemoveFileAsync(publicId);
                     }
+                    return StatusCode(result.code, result.Value);
                 }
+                return StatusCode(result.code, result.Value);
             }
-            return StatusCode(result.code, result.Value);
         }
         [HttpGet]
         public async Task<IActionResult> GetAllProduct()
@@ -140,7 +155,7 @@ namespace eShopSolution.WebAPI.Controllers
             }
             foreach (var item in result.Value)
             {
-                _cloudinaryService.RemoveFile(item);
+                _cloudinaryService.RemoveFileAsync(item);
             }
 
             return StatusCode(result.code, "Delete Success");
