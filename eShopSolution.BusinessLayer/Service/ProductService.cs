@@ -308,14 +308,7 @@ namespace eShopSolution.BusinessLayer.Service
                 foreach (var item in Products)
                 {
                     var listColorID = await _productColorDal.GetColorIDByProductID(item.ID);
-                    foreach (int colorID in listColorID)
-                    {
-                        int ProductColorID = await _productColorDal.GetProductColorByProductIDAndColorID(item.ID, colorID);
-                        ColorItemModel colorItemModel = new ColorItemModel();
-                        colorItemModel.ProductColorID = ProductColorID;
-                        colorItemModel.ImageURL = await _productImageDal.GetImagefirstByID(ProductColorID);
-                        item.ColorItemModel.Add(colorItemModel);
-                    }
+                    item.ColorItemModel = await GetColorItemModelsByProductID(item.ID,model.ListColorID);
                 }
                 pagedResult = new PagedResult();
                 pagedResult.Items = Products;
@@ -349,11 +342,10 @@ namespace eShopSolution.BusinessLayer.Service
             return detailQuantities;
         }
 
-        private async Task<List<ColorItemModel>> GetColorItemModelsByProductID(int ProductID)
+        private async Task<List<ColorItemModel>> GetColorItemModelsByProductID(int ProductID, List<int>? ColorSearch = null)
         {
             var listProductColorIDs = await _productColorDal.GetProductColorIDByProductID(ProductID);
-            var colorItemModels = new List<ColorItemModel>();
-
+            var Listtuple = new List<Tuple<List<int>, ColorItemModel>>();
             foreach (var productColorID in listProductColorIDs)
             {
                 var colorItemModel = new ColorItemModel
@@ -361,10 +353,20 @@ namespace eShopSolution.BusinessLayer.Service
                     ProductColorID = productColorID,
                     ImageURL = await _productImageDal.GetImagefirstByID(productColorID)
                 };
-                colorItemModels.Add(colorItemModel);
+                var colorIDs = await _productColorDal.GetColorIDByProductColorID(productColorID);
+                Listtuple.Add(new Tuple<List<int>, ColorItemModel>(colorIDs, colorItemModel));
             }
-
-            return colorItemModels;
+            if (ColorSearch != null && ColorSearch.Count > 0)
+            {
+                Listtuple = Listtuple
+                   .OrderByDescending(tuple =>
+                   {
+                       var firstColorId = tuple.Item1.FirstOrDefault(id => ColorSearch.Contains(id));
+                       return firstColorId != null ? ColorSearch.IndexOf(firstColorId) : -1;
+                   }).ToList();
+            }
+            var sortedColorItemModels = Listtuple.Select(tuple => tuple.Item2).ToList();
+            return sortedColorItemModels;
         }        
 
         private async Task<Tuple<string, List<ColorModel>>> GetColorIDByProductColorID(int ProductColorID)
