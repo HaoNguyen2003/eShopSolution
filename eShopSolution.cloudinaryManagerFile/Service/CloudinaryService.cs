@@ -65,14 +65,15 @@ namespace eShopSolution.cloudinaryManagerFile.Service
             };
         }
 
-        public BaseModel RemoveFile(string PublicID)
+        public async Task<BaseModel> RemoveFileAsync(string PublicID)
         {
             var deletionParams = new DeletionParams(PublicID)
             {
                 ResourceType = ResourceType.Image
             };
 
-            var deletionResult = _cloudinary.Destroy(deletionParams);
+            //var deletionResult = _cloudinary.Destroy(deletionParams);
+            var deletionResult = await Task.Run(() => _cloudinary.Destroy(deletionParams));
 
             if (deletionResult.StatusCode == System.Net.HttpStatusCode.OK)
             {
