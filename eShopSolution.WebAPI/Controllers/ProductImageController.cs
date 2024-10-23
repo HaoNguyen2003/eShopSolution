@@ -54,7 +54,7 @@ namespace eShopSolution.WebAPI.Controllers
             productImageModel.PublicID = UploadImageResult.PublicID;
             var result = await _productImageService.Create(productImageModel);
             if (result.code != 200)
-                _cloudinaryService.RemoveFile(productImageModel.PublicID);
+                _cloudinaryService.RemoveFileAsync(productImageModel.PublicID);
             return StatusCode(result.code, result.Value);
         }
         [HttpPost("test")]
@@ -97,11 +97,11 @@ namespace eShopSolution.WebAPI.Controllers
             if (result.code != 200)
             {
                 if (!string.IsNullOrEmpty(tempPublicID))
-                    _cloudinaryService.RemoveFile(tempPublicID);
+                    _cloudinaryService.RemoveFileAsync(tempPublicID);
                 return StatusCode(500, result);
             }
             if (updateProductImage.Image != null)
-                _cloudinaryService.RemoveFile(check.Value.PublicID);
+                _cloudinaryService.RemoveFileAsync(check.Value.PublicID);
             return StatusCode(200, result);
         }
 
@@ -114,7 +114,7 @@ namespace eShopSolution.WebAPI.Controllers
             var result = await _productImageService.Delete(ID);
             if (result.code == 200)
             {
-                var resultRemove = _cloudinaryService.RemoveFile(check.Value.PublicID);
+                var resultRemove = await _cloudinaryService.RemoveFileAsync(check.Value.PublicID);
                 if (!resultRemove.IsSuccess)
                     return StatusCode(500, resultRemove);
             }
