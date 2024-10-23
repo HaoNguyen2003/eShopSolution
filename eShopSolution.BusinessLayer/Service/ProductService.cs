@@ -7,6 +7,7 @@ using eShopSolution.DtoLayer.RepositoryModel;
 using eShopSolution.DtoLayer.RequestModel;
 using eShopSolution.EntityLayer.Data;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using System.Drawing;
 
 namespace eShopSolution.BusinessLayer.Service
@@ -22,11 +23,12 @@ namespace eShopSolution.BusinessLayer.Service
         private readonly ICustomCache<string> _customCache;
         private readonly IColorCombinationService _colorCombinationService;
         private readonly IColorCombinationColorService _colorCombinationColorService;
+        private readonly IServiceProvider _serviceProvider;
 
         public ProductService(IProductDal productDal, IProductColorDal productColorDal, IProductImageDal productImageDal,
             IProductSizeInventoryDal productSizeInventoryDal, IColorDal colorDal,
             ISizeDal sizeDal, ICustomCache<string> customCache,IColorCombinationService colorCombinationService,
-            IColorCombinationColorService colorCombinationColorService)
+            IColorCombinationColorService colorCombinationColorService, IServiceProvider serviceProvider)
         {
             _productDal = productDal;
             _productColorDal = productColorDal;
@@ -36,7 +38,8 @@ namespace eShopSolution.BusinessLayer.Service
             _sizeDal = sizeDal;
             _customCache = customCache;
             _colorCombinationService = colorCombinationService;
-            _colorCombinationColorService= colorCombinationColorService;
+            _colorCombinationColorService = colorCombinationColorService;
+            _serviceProvider = serviceProvider;
         }
         //----------------------------------------------------------------------------------//
         public async Task<BaseRep<string>> Create(ProductModel model)
@@ -81,6 +84,7 @@ namespace eShopSolution.BusinessLayer.Service
             }
             return new BaseRep<List<ProductCardModel>>() { code = 200, Value = productCardModel };
         }
+        #region Create Cũ
         public async Task<BaseRep<string>> CreateProduct(ProductModel productModel, List<CollectionModel> collectionModels)
         {
             int ProductID = await _productDal.CreateProduct(productModel);
@@ -150,6 +154,77 @@ namespace eShopSolution.BusinessLayer.Service
                 return new BaseRep<string>() { code = 500, Value = "Create Fail: " + ex.Message };
             }
         }
+        public async Task<BaseRep<string>> CreateProduct(ProductModel productModel, List<ProductDataNew> collectionModels)
+        {
+            int ProductID = await _productDal.CreateProduct(productModel);
+            if (ProductID == -1)
+            {
+                return new BaseRep<string>() { code = 500, Value = "Create Fail" };
+            }
+            try
+            {
+                foreach (var item in collectionModels)
+                {
+                    ProductColorModel productColor = new ProductColorModel();
+                    productColor.ProductID = ProductID;
+                    var ListColorID = await _colorDal.GetIntColorByName(item.Color);
+                    int ColorCombinationID = await _colorCombinationService.GetColorCombinationIdIfExists(ListColorID);
+                    if (ColorCombinationID == -1)
+                    {
+                        ColorCombinationID = await _colorCombinationService.CreateModel(new ColorCombinationModel() { ID = 0, Name = "" });
+                        foreach (var colorID in ListColorID)
+                        {
+                            await _colorCombinationColorService.Create(new ColorCombinationColorModel()
+                            { ID = 0, ColorCombinationID = ColorCombinationID, ColorID = colorID });
+                        }
+                        productColor.ColorCombinationID = ColorCombinationID;
+                    }
+                    else
+                    {
+                        productColor.ColorCombinationID = ColorCombinationID;
+                    }
+                    int ProductColorID = await _productColorDal.CreateProductColorReturnID(productColor);
+                    foreach (var image in item.ListImageURL)
+                    {
+                        ProductImageModel productImageModel = new ProductImageModel();
+                        productImageModel.ProductColorID = ProductColorID;
+                        productImageModel.ImageURL = image.ImageURL;
+                        productImageModel.PublicID = image.PublicID;
+                        var check = await _productImageDal.Create(productImageModel);
+                        if (check.code != 200)
+                        {
+                            await _productDal.Delete(ProductID);
+                            return new BaseRep<string>() { code = 500, Value = check.Value };
+                        }
+                    }
+                    foreach (var detailsizeandquantity in item.DetailQuantity)
+                    {
+                        DetailQuantityProductModel detailQuantityProductModel = new DetailQuantityProductModel()
+                        {
+                            ID = 0,
+                            ProductColorID = ProductColorID,
+                            SizeID = detailsizeandquantity.SizeID,
+                            Quantity = detailsizeandquantity.Quantity
+                        };
+                        var check = await _productSizeInventoryDal.CreateProductSizeInventory(detailQuantityProductModel);
+                        if (check.code != 200)
+                        {
+                            await _productDal.Delete(ProductID);
+                            return new BaseRep<string>() { code = 500, Value = check.Value };
+                        }
+                    }
+                }
+                _customCache.Clear();
+                return new BaseRep<string>() { code = 200, Value = "Create Success" };
+            }
+            catch (Exception ex)
+            {
+                await _productDal.Delete(ProductID);
+                return new BaseRep<string>() { code = 500, Value = "Create Fail: " + ex.Message };
+            }
+        }
+        #endregion
+        
         public async Task<BaseRep<DetailProduct>> GetDetailProductByProductIDAndColorID(int ID, int ProductColorID)
         {
 
@@ -254,75 +329,7 @@ namespace eShopSolution.BusinessLayer.Service
             }
             return new BaseRep<PagedResult>() { code = 200, Value = pagedResult };
         }
-        public async Task<BaseRep<string>> CreateProduct(ProductModel productModel, List<ProductDataNew> collectionModels)
-        {
-            int ProductID = await _productDal.CreateProduct(productModel);
-            if (ProductID == -1)
-            {
-                return new BaseRep<string>() { code = 500, Value = "Create Fail" };
-            }
-            try
-            {
-                foreach (var item in collectionModels)
-                {
-                    ProductColorModel productColor = new ProductColorModel();
-                    productColor.ProductID = ProductID;
-                    var ListColorID = await _colorDal.GetIntColorByName(item.Color);
-                    int ColorCombinationID = await _colorCombinationService.GetColorCombinationIdIfExists(ListColorID);
-                    if (ColorCombinationID == -1)
-                    {
-                        ColorCombinationID = await _colorCombinationService.CreateModel(new ColorCombinationModel() { ID = 0, Name = "" });
-                        foreach (var colorID in ListColorID)
-                        {
-                            await _colorCombinationColorService.Create(new ColorCombinationColorModel()
-                            { ID = 0, ColorCombinationID = ColorCombinationID, ColorID = colorID });
-                        }
-                        productColor.ColorCombinationID = ColorCombinationID;
-                    }
-                    else
-                    {
-                        productColor.ColorCombinationID = ColorCombinationID;
-                    }
-                    int ProductColorID = await _productColorDal.CreateProductColorReturnID(productColor);
-                    foreach (var image in item.ListImageURL)
-                    {
-                        ProductImageModel productImageModel = new ProductImageModel();
-                        productImageModel.ProductColorID = ProductColorID;
-                        productImageModel.ImageURL = image.ImageURL;
-                        productImageModel.PublicID = image.PublicID;
-                        var check = await _productImageDal.Create(productImageModel);
-                        if (check.code != 200)
-                        {
-                            await _productDal.Delete(ProductID);
-                            return new BaseRep<string>() { code = 500, Value = check.Value };
-                        }
-                    }
-                    foreach (var detailsizeandquantity in item.DetailQuantity)
-                    {
-                        DetailQuantityProductModel detailQuantityProductModel = new DetailQuantityProductModel()
-                        {
-                            ID = 0,
-                            ProductColorID = ProductColorID,
-                            SizeID = detailsizeandquantity.SizeID,
-                            Quantity = detailsizeandquantity.Quantity
-                        };
-                        var check = await _productSizeInventoryDal.CreateProductSizeInventory(detailQuantityProductModel);
-                        if (check.code != 200)
-                        {
-                            await _productDal.Delete(ProductID);
-                            return new BaseRep<string>() { code = 500, Value = check.Value };
-                        }
-                    }
-                }
-                _customCache.Clear();
-                return new BaseRep<string>() { code = 200, Value = "Create Success" };
-            }
-            catch (Exception ex)
-            {
-                await _productDal.Delete(ProductID);
-                return new BaseRep<string>() { code = 500, Value = "Create Fail: " + ex.Message };
-            }
-        }
+       
         private async Task<List<DetailQuantityProductDisplay>> GetDetailQuantityByProductColorID(int ProductColorID)
         {
             var detailQuantityProductModels = await _productSizeInventoryDal.GetAllDetailQuantityProducByProductColorID(ProductColorID);
@@ -376,6 +383,177 @@ namespace eShopSolution.BusinessLayer.Service
                 MixColor = MixColor.TrimEnd('/', ' ');
             }
             return Tuple.Create(MixColor, colorModels);
+        }
+
+        private async Task<int> CreateProductColor(int productID, List<int> colorIDs)
+        {
+            int colorCombinationID = await _colorCombinationService.GetColorCombinationIdIfExists(colorIDs);
+
+            if (colorCombinationID == -1)
+            {
+                colorCombinationID = await _colorCombinationService.CreateModel(new ColorCombinationModel() { ID = 0, Name = "" });
+                var tasks = colorIDs.Select(async colorID =>
+                {
+                    using (var scope = _serviceProvider.CreateScope())
+                    {
+                        var colorCombinationColorService = scope.ServiceProvider.GetRequiredService<IColorCombinationColorService>();
+
+                        var result = await colorCombinationColorService.Create(new ColorCombinationColorModel
+                        {
+                            ID = 0,
+                            ColorCombinationID = colorCombinationID,
+                            ColorID = colorID
+                        });
+
+                        if (result.code != 200)
+                        {
+                            Console.WriteLine($"Error creating color combination color for ColorID {colorID}: {result.Value}");
+                        }
+                    }
+                }).ToList();
+                await Task.WhenAll(tasks); 
+            }
+
+            ProductColorModel productColor = new ProductColorModel
+            {
+                ProductID = productID,
+                ColorCombinationID = colorCombinationID
+            };
+
+            return await _productColorDal.CreateProductColorReturnID(productColor);
+        }
+
+        private async Task<BaseRep<string>> AddProductImages(int productColorID, List<CloudinaryImageModel> listImageURL)
+        {
+            var tasks = listImageURL.Select(async image =>
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var productImageDal = scope.ServiceProvider.GetRequiredService<IProductImageDal>();
+
+                    var productImage = new ProductImageModel
+                    {
+                        ProductColorID = productColorID,
+                        ImageURL = image.ImageURL,
+                        PublicID = image.PublicID
+                    };
+                    var r = await productImageDal.Create(productImage);
+                    if (r.code != 200)
+                    {
+                        Console.WriteLine($"Error adding product image: {r.Value}");
+                    }
+                    return r;
+                }
+            });
+            var results = await Task.WhenAll(tasks);
+            return results.FirstOrDefault(r => r.code != 200) ?? new BaseRep<string>() { code = 200 };
+        }
+        private async Task<BaseRep<string>> AddProductSizeAndQuantity(int productColorID, List<AddDetailQuantityProduct> detailQuantities)
+        {
+            var tasks = detailQuantities.Select(async details =>
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var productSizeInventoryDal = scope.ServiceProvider.GetRequiredService<IProductSizeInventoryDal>();
+
+                    var detailModel = new DetailQuantityProductModel
+                    {
+                        ID = 0,
+                        ProductColorID = productColorID,
+                        SizeID = details.SizeID,
+                        Quantity = details.Quantity
+                    };
+                    var result = await productSizeInventoryDal.CreateProductSizeInventory(detailModel);
+                    if (result.code != 200)
+                    {
+                        Console.WriteLine($"Error adding product size and quantity for SizeID {details.SizeID}: {result.Value}");
+                    }
+                    return result;
+                }
+            });
+            var results = await Task.WhenAll(tasks);
+            return results.FirstOrDefault(r => r.code != 200) ?? new BaseRep<string>() { code = 200 };
+        }
+        private async Task<BaseRep<string>> ProcessProductCollection(int ProductID, List<int>? ListColorID = null, List<CloudinaryImageModel>? ListImageURL = null, List<AddDetailQuantityProduct>? DetailQuantity = null)
+        {
+            int productColorID = await CreateProductColor(ProductID, ListColorID);
+            if (productColorID == -1)
+            {
+                return new BaseRep<string>() { code = 500, Value = "Create Product Color Fail" };
+            }
+
+            var imageCheck = await AddProductImages(productColorID, ListImageURL);
+            if (imageCheck.code != 200)
+            {
+                return new BaseRep<string>() { code = 500, Value = imageCheck.Value };
+            }
+
+            var sizeCheck = await AddProductSizeAndQuantity(productColorID, DetailQuantity);
+            if (sizeCheck.code != 200)
+            {
+                return new BaseRep<string>() { code = 500, Value = sizeCheck.Value };
+            }
+            return new BaseRep<string>() { code = 200 };
+        }
+        
+        public async Task<BaseRep<string>> CreateProduct(ProductModel productModel, List<ProductDataNew>? newCollectionModels = null, List<CollectionModel>? oldCollectionModels = null)
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var scopedProductDal = scope.ServiceProvider.GetRequiredService<IProductDal>();
+                var scopedColorDal = scope.ServiceProvider.GetRequiredService<IColorDal>();
+
+                int ProductID = await scopedProductDal.CreateProduct(productModel);
+                if (ProductID == -1)
+                {
+                    return new BaseRep<string>() { code = 500, Value = "Create Fail" };
+                }
+
+                try
+                {
+                    if (oldCollectionModels != null)
+                    {
+                        foreach (var item in oldCollectionModels)
+                        {
+                            using (var innerScope = _serviceProvider.CreateScope())
+                            {
+                                var innerScopedProductDal = innerScope.ServiceProvider.GetRequiredService<IProductDal>();
+                                var result = await ProcessProductCollection(ProductID, item.ColorIDs, item.ListImageURL, item.DetailQuantity);
+                                if (result.code != 200)
+                                {
+                                    await innerScopedProductDal.Delete(ProductID);
+                                    return result;
+                                }
+                            }
+                        }
+                    }
+                    if (newCollectionModels != null)
+                    {
+                        foreach (var item in newCollectionModels)
+                        {
+                            using (var innerScope = _serviceProvider.CreateScope())
+                            {
+                                var innerScopedColorDal = innerScope.ServiceProvider.GetRequiredService<IColorDal>();
+                                var ListColorID = await innerScopedColorDal.GetIntColorByName(item.Color);
+                                var result = await ProcessProductCollection(ProductID, ListColorID, item.ListImageURL, item.DetailQuantity);
+                                if (result.code != 200)
+                                {
+                                    await scopedProductDal.Delete(ProductID);
+                                    return result;
+                                }
+                            }
+                        }
+                    }
+                    _customCache.Clear();
+                    return new BaseRep<string>() { code = 200, Value = "Create Success" };
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Create Fail: " + ex.Message);
+                    await scopedProductDal.Delete(ProductID);
+                    return new BaseRep<string>() { code = 500, Value = "Create Fail: " + ex.Message };
+                }
+            }
         }
     }
 }
