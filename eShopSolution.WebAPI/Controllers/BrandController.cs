@@ -52,7 +52,7 @@ namespace eShopSolution.WebAPI.Controllers
             brandModel.PublicID = UploadImageResult.PublicID;
             var result = await _brandService.Create(brandModel);
             if (result.code != 200)
-                _cloudinaryService.RemoveFile(brandModel.PublicID);
+              await _cloudinaryService.RemoveFileAsync(brandModel.PublicID);
             return StatusCode(result.code, result.Value);
         }
 
@@ -88,11 +88,11 @@ namespace eShopSolution.WebAPI.Controllers
             if (result.code != 200)
             {
                 if (!string.IsNullOrEmpty(tempPublicID))
-                    _cloudinaryService.RemoveFile(tempPublicID);
+                    await  _cloudinaryService.RemoveFileAsync(tempPublicID);
                 return StatusCode(500, result);
             }
             if (updateBrand.BrandImage != null)
-                _cloudinaryService.RemoveFile(check.Value.PublicID);
+                await _cloudinaryService.RemoveFileAsync(check.Value.PublicID);
             return StatusCode(200, result);
 
         }
@@ -107,7 +107,7 @@ namespace eShopSolution.WebAPI.Controllers
             var result = await _brandService.Delete(ID);
             if (result.code == 200)
             {
-                var resultRemove = _cloudinaryService.RemoveFile(check.Value.PublicID);
+                var resultRemove = await _cloudinaryService.RemoveFileAsync(check.Value.PublicID);
                 if (!resultRemove.IsSuccess)
                     return StatusCode(500, resultRemove);
             }

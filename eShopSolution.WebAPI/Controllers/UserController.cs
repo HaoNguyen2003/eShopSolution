@@ -83,11 +83,11 @@ namespace eShopSolution.WebAPI.Controllers
             var result = await _userService.UpdateAvatar(UploadImageResult.Url,UploadImageResult.PublicID, updateAvatar.ID);
             if (!result.IsSuccess)
             {
-                _cloudinaryService.RemoveFile(UploadImageResult.PublicID);
+                await _cloudinaryService.RemoveFileAsync(UploadImageResult.PublicID);
                 return StatusCode(500, result.Error);
             }
             if (!string.IsNullOrEmpty(result.Value))
-                _cloudinaryService.RemoveFile(result.Value);
+                await _cloudinaryService.RemoveFileAsync(result.Value);
             return StatusCode(200, "Update Avatar Success");
 
         }

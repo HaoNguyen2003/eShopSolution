@@ -23,7 +23,7 @@ namespace eShopSolution.WebAPI.Controllers
         [HttpPost("Delete")]
         public IActionResult Detele(string publicID)
         {
-            var result = _cloudinaryService.RemoveFile(publicID);
+            var result = _cloudinaryService.RemoveFileAsync(publicID);
             return Ok(result);
         }
     }
