@@ -1,4 +1,5 @@
 ﻿using eShopSolution.DataLayer.SeedConfiguration;
+using eShopSolution.DtoLayer.Model;
 using eShopSolution.EntityLayer.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ namespace eShopSolution.DataLayer.Context
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=DESKTOP-Q0LVKG1;Initial Catalog=MyManagerStoreNew;Integrated Security=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer("Data Source=DESKTOP-Q0LVKG1;Initial Catalog=MyManagerStoreNew;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True;;");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -80,6 +81,10 @@ namespace eShopSolution.DataLayer.Context
             .WithMany(g => g.ProductImages)
             .HasForeignKey(s => s.ProductColorID)
             .OnDelete(DeleteBehavior.Cascade);
+
+            //modelBuilder.Entity<ProductImages>()
+            //.Property(p => p.ID)
+            //.ValueGeneratedOnAdd();
 
             modelBuilder.Entity<ProductSizeInventory>()
             .HasOne<ProductColors>(s => s.ProductColor)
