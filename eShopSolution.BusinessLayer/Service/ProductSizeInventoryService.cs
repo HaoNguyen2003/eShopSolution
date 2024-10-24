@@ -19,7 +19,7 @@ namespace eShopSolution.BusinessLayer.Service
         public async Task<BaseRep<string>> Create(DetailQuantityProductModel model)
         {
             _customCache.Clear();
-            return await _productSizeInventoryDal.CreateProductSizeInventory(model);
+            return await _productSizeInventoryDal.Create(model);
         }
 
         public async Task<BaseRep<string>> Delete(int ID)
@@ -57,7 +57,7 @@ namespace eShopSolution.BusinessLayer.Service
         public async Task<BaseRep<string>> Update(int ID, DetailQuantityProductModel model)
         {
             _customCache.Clear();
-            return await _productSizeInventoryDal.UpdateProductSizeInventory(model);
+            return await _productSizeInventoryDal.Update(model.ID,model);
         }
     }
 }

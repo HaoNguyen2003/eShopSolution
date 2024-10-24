@@ -16,7 +16,7 @@ namespace eShopSolution.BusinessLayer.Service
 
         public async Task<BaseRep<string>> Create(CategoryAndBrandModel model)
         {
-            return await _categoryAndBrandDal.CreateBrandAndCategory(model);
+            return await _categoryAndBrandDal.Create(model);
         }
 
         public async Task<BaseRep<string>> Delete(int ID)
@@ -46,7 +46,7 @@ namespace eShopSolution.BusinessLayer.Service
 
         public async Task<BaseRep<string>> Update(int ID, CategoryAndBrandModel model)
         {
-            return await _categoryAndBrandDal.UpdateBrandByCategoryID(ID, model);
+            return await _categoryAndBrandDal.Update(ID, model);
         }
     }
 }
