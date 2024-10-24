@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using eShopSolution.BusinessLayer.Abstract;
 using eShopSolution.cloudinaryManagerFile.Abstract;
+using eShopSolution.CrawlData.Model;
+using eShopSolution.CrawlData.Service;
 using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
+using eShopSolution.DtoLayer.RepositoryModel;
 using eShopSolution.DtoLayer.UpdateModel;
 using eShopSolution.WebAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -21,14 +24,18 @@ namespace eShopSolution.WebAPI.Controllers
         private readonly ILogger<ProductController> _logger;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ReadFileJson _readFileJson;
 
-        public ProductController(IMapper mapper, IProductService productService, ILogger<ProductController> logger, ICloudinaryService cloudinaryService,IServiceProvider serviceProvider)
+        public ProductController(IMapper mapper, IProductService productService,
+            ILogger<ProductController> logger, ICloudinaryService cloudinaryService,
+            IServiceProvider serviceProvider, ReadFileJson readFileJson)
         {
             _mapper = mapper;
             _productService = productService;
             _logger = logger;
             _cloudinaryService = cloudinaryService;
             _serviceProvider = serviceProvider;
+            _readFileJson = readFileJson;
         }
 
         [HttpPost("AddProduct")]
@@ -71,20 +78,76 @@ namespace eShopSolution.WebAPI.Controllers
             {
                 var scopedProductService = scope.ServiceProvider.GetRequiredService<IProductService>();
                 var result = await scopedProductService.CreateProduct(productModel, null, collectionModels);
-
                 if (result.code != 200)
                 {
                     var publicIdsToRemove = collectionModels.SelectMany(item => item.ListImageURL)
                                             .Select(img => img.PublicID)
                                             .ToList();
-                    foreach (var publicId in publicIdsToRemove)
+                    var deleteTasks = publicIdsToRemove.Select(async p =>
                     {
-                        _cloudinaryService.RemoveFileAsync(publicId);
-                    }
+                        await _cloudinaryService.RemoveFileAsync(p);
+                    });
+                    await Task.WhenAll(deleteTasks);
                     return StatusCode(result.code, result.Value);
                 }
                 return StatusCode(result.code, result.Value);
             }
+        }
+
+        [HttpPost("GetDataFromFileJson")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> GetDataFromFile(IFormFile file)
+        {
+            var ListProduct = _readFileJson.FucntionReadFileJson(file);
+            var productTasks = ListProduct.Select(async product =>
+            {
+                var productModel = _mapper.Map<ProductModel>(product.ProductInfo);
+                var collectionModels = new List<ProductDataNew>();
+                var ListCollection = product.ProductwayData;
+                var collectionUploadTasks = ListCollection.Select(async collectionModel =>
+                {
+                    var model = new ProductDataNew()
+                    {
+                        Color = collectionModel.Color,
+                        DetailQuantity = collectionModel.DetailQuantity,
+                        ListImageURL = new List<CloudinaryImageModel>()
+                    };
+                    var imageUploadTasks = collectionModel.Imgs.Select(async fileModel =>
+                    {
+                        var resultImage = await _cloudinaryService.UploadFile(fileModel, "ImageEshop/Product");
+                        if (resultImage.IsSuccess)
+                        {
+                            return new CloudinaryImageModel
+                            {
+                                ImageURL = resultImage.Url,
+                                PublicID = resultImage.PublicID
+                            };
+                        }
+                        return null;
+                    });
+
+                    var uploadedImages = await Task.WhenAll(imageUploadTasks);
+                    model.ListImageURL = uploadedImages.Where(img => img != null).ToList();
+                    return model;
+                });
+                var uploadedCollectionModels = await Task.WhenAll(collectionUploadTasks);
+                collectionModels.AddRange(uploadedCollectionModels);
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var scopedProductService = scope.ServiceProvider.GetRequiredService<IProductService>();
+                    var result = await scopedProductService.CreateProduct(productModel, collectionModels, null);
+                    return (result, collectionModels.SelectMany(c => c.ListImageURL).ToList());
+                }
+            });
+
+            var results = await Task.WhenAll(productTasks);
+            var failedResults = results.Where(r => r.result.code != 200);
+            var tasksDelete = failedResults.SelectMany(failedResult =>
+                failedResult.Item2.Select(async uploadedImage =>
+                    await _cloudinaryService.RemoveFileAsync(uploadedImage.PublicID))
+            );
+            await Task.WhenAll(tasksDelete);
+            return Ok(new { Message = "Products processed", Results = results });
         }
         [HttpGet]
         public async Task<IActionResult> GetAllProduct()
@@ -100,7 +163,7 @@ namespace eShopSolution.WebAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var DetailProduct = await _productService.GetDetailProductByProductIDAndColorID(ID, ProductColorID);
+            var DetailProduct = await _productService.GetDetailProductByProductIDAndProductColorID(ID, ProductColorID);
             return StatusCode(DetailProduct.code, DetailProduct.Value);
         }
 
@@ -112,7 +175,7 @@ namespace eShopSolution.WebAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var ProductDashBoard = await _productService.GetProductInDashBoardByProductIDAndColorID(ProductID, ProductColorID);
+            var ProductDashBoard = await _productService.GetProductInDashBoardByProductIDAndProductColorID(ProductID, ProductColorID);
             _logger.LogInformation($"ProductDashBoard: {JsonConvert.SerializeObject(ProductDashBoard.Value)}");
             return StatusCode(ProductDashBoard.code, ProductDashBoard.Value);
         }
