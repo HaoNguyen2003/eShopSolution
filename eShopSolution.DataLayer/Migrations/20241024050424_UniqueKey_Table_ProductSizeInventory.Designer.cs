@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eShopSolution.DataLayer.Context;
 
@@ -11,9 +12,11 @@ using eShopSolution.DataLayer.Context;
 namespace eShopSolution.DataLayer.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20241024050424_UniqueKey_Table_ProductSizeInventory")]
+    partial class UniqueKey_Table_ProductSizeInventory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -427,7 +430,7 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Property<string>("BrandName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageURL")
                         .IsRequired()
@@ -437,9 +440,6 @@ namespace eShopSolution.DataLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BrandID");
-
-                    b.HasIndex("BrandName")
-                        .IsUnique();
 
                     b.ToTable("Brand");
                 });
@@ -454,7 +454,7 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageURL")
                         .IsRequired()
@@ -464,9 +464,6 @@ namespace eShopSolution.DataLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CategoryID");
-
-                    b.HasIndex("CategoryName")
-                        .IsUnique();
 
                     b.ToTable("Category");
                 });
@@ -567,12 +564,9 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("Colors");
                 });
@@ -661,12 +655,9 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("Gender");
                 });
@@ -885,8 +876,7 @@ namespace eShopSolution.DataLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Discount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("GenderID")
                         .HasColumnType("int");
@@ -896,12 +886,10 @@ namespace eShopSolution.DataLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PriceIn")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PriceOut")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -954,7 +942,7 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Property<string>("ImageURL")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProductColorID")
                         .HasColumnType("int");
@@ -964,9 +952,6 @@ namespace eShopSolution.DataLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("ImageURL")
-                        .IsUnique();
 
                     b.HasIndex("ProductColorID");
 
@@ -1127,12 +1112,9 @@ namespace eShopSolution.DataLayer.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("Sizes");
                 });
