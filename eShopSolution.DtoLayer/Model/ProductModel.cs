@@ -1,4 +1,6 @@
-﻿namespace eShopSolution.DtoLayer.Model
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace eShopSolution.DtoLayer.Model
 {
     public class ProductModel
     {
@@ -10,6 +12,8 @@
         public string Title { get; set; }
         public decimal PriceIn { get; set; }
         public decimal PriceOut { get; set; }
+
+        [Range(0, 99.99, ErrorMessage = "Discount must be less than 100.")]
         public decimal Discount { get; set; }
         public string Description { get; set; }
         public int check { get; set; }
