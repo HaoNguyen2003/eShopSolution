@@ -15,6 +15,14 @@ namespace eShopSolution.cloudinaryManagerFile.Service
         {
             _cloudinary = CloudinaryConfig.GetCloudinary();
         }
+        public static string GenerateRandomString()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            Random random = new Random();
+            int length = random.Next(1, 100);
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
         public async Task<BaseModel> UploadFile(string source, string folder, IFormFile formFile = null)
         {
             ImageUploadParams uploadParams;
@@ -31,7 +39,7 @@ namespace eShopSolution.cloudinaryManagerFile.Service
             {
                 uploadParams = new ImageUploadParams
                 {
-                    File = new FileDescription(Guid.NewGuid().ToString(), formFile.OpenReadStream()),
+                    File = new FileDescription(Guid.NewGuid().ToString() + GenerateRandomString(), formFile.OpenReadStream()),
                     Folder = folder
                 };
             }
