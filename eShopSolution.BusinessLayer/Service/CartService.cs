@@ -21,7 +21,7 @@ namespace eShopSolution.BusinessLayer.Service
             _productSizeInventoryService = productSizeInventoryService;
         }
 
-        public async Task<DetailProduct> UpdateDetailProductByProductIDAndColorID(DetailCart cart)
+        public async Task<DetailProduct> UpdateDetailProductByProductIDAndProductColorID(DetailCart cart)
         {
             //var productColorID = await _productColorDal.GetProductColorByProductIDAndColorID(cart.ProductID, cart.ColorID);
             var DetailQuantityProductModel = await _productSizeInventoryService.GetProductSizeInventoryByProductColorIDAndSizeID(cart.ProductColorID,cart.SizeID);
