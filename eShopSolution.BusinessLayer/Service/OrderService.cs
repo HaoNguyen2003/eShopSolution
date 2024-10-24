@@ -48,8 +48,7 @@ namespace eShopSolution.BusinessLayer.Service
                 return new Response<VnPaymentResquestModel>() { IsSuccess=false,Error= resultOrder.Error };
             foreach (var detail in orderModel.detailCarts)
             {
-                int ProductColorID = await _productColorDal.GetProductColorByProductIDAndColorID(detail.ProductID, detail.ColorID);
-                var ProductSizeInventory = await _productSizeInventoryDal.GetProductSizeInventoryByProductColorIDAndSizeID(ProductColorID, detail.SizeID);
+                var ProductSizeInventory = await _productSizeInventoryDal.GetProductSizeInventoryByProductColorIDAndSizeID(detail.ProductColorID, detail.SizeID);
                 var Product = await _productService.GetByID(detail.ProductID);
                 if(Product.code != 200)
                     return new Response<VnPaymentResquestModel>() { IsSuccess = false, Error = $"No product available", Value = new VnPaymentResquestModel() {OrderId = resultOrder.Value} };
@@ -60,8 +59,7 @@ namespace eShopSolution.BusinessLayer.Service
                 
                 if (ProductSizeInventory.Value.Quantity < 0) {
                     var Size = await _sizeService.GetByID(detail.SizeID);
-                    var Color = await _colorService.GetByID(detail.ColorID);
-                    return new Response<VnPaymentResquestModel>() { IsSuccess = false, Error = $"Insufficient quantity of product: {Product.Value.Name} | Size: {Size.Value.SizeName} | Color: {Color.Value.Name}", Value = new VnPaymentResquestModel() { OrderId = resultOrder.Value } };
+                    return new Response<VnPaymentResquestModel>() { IsSuccess = false, Error = $"Insufficient quantity of product: {Product.Value.Name} | Size: {Size.Value.SizeName} | Color: {detail.ProductColorID}", Value = new VnPaymentResquestModel() { OrderId = resultOrder.Value } };
                 }
                 var result = await _productSizeInventoryDal.Update(ProductSizeInventory.Value.ID, ProductSizeInventory.Value);
                 if (result.code != 200)
