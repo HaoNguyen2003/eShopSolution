@@ -18,7 +18,6 @@ using eShopSolution.PayMentService.Config;
 using eShopSolution.PayMentService.Service;
 using eShopSolution.RealTime.DataService;
 using eShopSolution.RealTime.Hubs;
-using eShopSolution.WebAPI.CustomPermission;
 using eShopSolution.WebAPI.Permission;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -217,11 +216,6 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
-
-
-/*builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
-builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
-*/
 
 builder.Services.AddIdentity<AppUser, AppRole>(opt =>
 {

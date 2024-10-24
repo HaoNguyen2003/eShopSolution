@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="CustomPermission\" />
     <Folder Include="Image\product\" />
   </ItemGroup>
 
