@@ -10,6 +10,6 @@ namespace eShopSolution.BusinessLayer.Abstract
 {
     public interface ICartService
     {
-        public Task<DetailProduct> UpdateDetailProductByProductIDAndColorID(DetailCart cart);
+        public Task<DetailProduct> UpdateDetailProductByProductIDAndProductColorID(DetailCart cart);
     }
 }

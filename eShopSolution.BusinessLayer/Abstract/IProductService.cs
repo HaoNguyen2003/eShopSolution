@@ -8,7 +8,7 @@ namespace eShopSolution.BusinessLayer.Abstract
 {
     public interface IProductService : IGenericService<ProductModel, Product>
     {
-        public Task<BaseRep<DetailProduct>> GetDetailProductByProductIDAndProductColorID(int ID, int ColorID);
+        public Task<BaseRep<DetailProduct>> GetDetailProductByProductIDAndProductColorID(int ProductID, int ColorID);
         public Task<BaseRep<ProductDashBoard>> GetProductInDashBoardByProductIDAndProductColorID(int ProductID, int ColorID);
         public Task<BaseRep<List<ProductCardModel>>> GetAllProduct();
         public Task<BaseRep<List<String>>> DeleteProduct(int ID);
