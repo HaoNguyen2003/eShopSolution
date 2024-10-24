@@ -13,8 +13,11 @@ namespace eShopSolution.EntityLayer.Data
         public int GenderID { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
+        [Range(0.01, double.MaxValue, ErrorMessage = "PriceIn must be greater than 0.")]
         public decimal PriceIn { get; set; }
+        [Range(0.01, double.MaxValue, ErrorMessage = "PriceOut must be greater than 0.")]
         public decimal PriceOut { get; set; }
+        [Range(0, 99.99, ErrorMessage = "Discount must be less than 100.")]
         public decimal Discount { get; set; }
         public string Description { get; set; }
         public DateTime CreateDate { get; set; }

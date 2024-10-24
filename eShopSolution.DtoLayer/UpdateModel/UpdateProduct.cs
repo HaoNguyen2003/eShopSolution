@@ -20,9 +20,11 @@ namespace eShopSolution.DtoLayer.UpdateModel
         public string Title { get; set; }
 
         [Required(ErrorMessage = "PriceIn is required.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "PriceIn must be greater than 0.")]
         public decimal PriceIn { get; set; }
 
         [Required(ErrorMessage = "PriceOut is required.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "PriceOut must be greater than 0.")]
         public decimal PriceOut { get; set; }
 
         [Range(0, 100, ErrorMessage = "Discount must be between 0 and 100.")]
