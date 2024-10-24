@@ -225,7 +225,7 @@ namespace eShopSolution.BusinessLayer.Service
         }
         #endregion
         
-        public async Task<BaseRep<DetailProduct>> GetDetailProductByProductIDAndColorID(int ID, int ProductColorID)
+        public async Task<BaseRep<DetailProduct>> GetDetailProductByProductIDAndProductColorID(int ID, int ProductColorID)
         {
 
             var detailProduct = _customCache.Get<DetailProduct>(_customCache.GenerateCacheKeyProduct(new DetailProductReq() {ProductID=ID,ProductColorID = ProductColorID,Where = "DetailProduct" }));
@@ -249,7 +249,7 @@ namespace eShopSolution.BusinessLayer.Service
             }
             return new BaseRep<DetailProduct>() { code = 200, Value = detailProduct };
         }
-        public async Task<BaseRep<ProductDashBoard>> GetProductInDashBoardByProductIDAndColorID(int ProductID, int ProductColorID)
+        public async Task<BaseRep<ProductDashBoard>> GetProductInDashBoardByProductIDAndProductColorID(int ProductID, int ProductColorID)
         {
             var ProductDashBoard = _customCache.Get<ProductDashBoard>(_customCache.GenerateCacheKeyProduct(new DetailProductReq() { ProductID = ProductID, ProductColorID = ProductColorID, Where = "DashBoardProduct" }));
             if (ProductDashBoard == null)
