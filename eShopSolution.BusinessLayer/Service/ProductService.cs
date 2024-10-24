@@ -137,7 +137,8 @@ namespace eShopSolution.BusinessLayer.Service
                             SizeID = detailsizeandquantity.SizeID,
                             Quantity = detailsizeandquantity.Quantity
                         };
-                        var check = await _productSizeInventoryDal.CreateProductSizeInventory(detailQuantityProductModel);
+                        //var check = await _productSizeInventoryDal.CreateProductSizeInventory(detailQuantityProductModel);
+                        var check = await _productSizeInventoryDal.Create(detailQuantityProductModel);
                         if (check.code != 200)
                         {
                             await _productDal.Delete(ProductID);
@@ -206,7 +207,7 @@ namespace eShopSolution.BusinessLayer.Service
                             SizeID = detailsizeandquantity.SizeID,
                             Quantity = detailsizeandquantity.Quantity
                         };
-                        var check = await _productSizeInventoryDal.CreateProductSizeInventory(detailQuantityProductModel);
+                        var check = await _productSizeInventoryDal.Create(detailQuantityProductModel);
                         if (check.code != 200)
                         {
                             await _productDal.Delete(ProductID);
@@ -225,13 +226,13 @@ namespace eShopSolution.BusinessLayer.Service
         }
         #endregion
         
-        public async Task<BaseRep<DetailProduct>> GetDetailProductByProductIDAndProductColorID(int ID, int ProductColorID)
+        public async Task<BaseRep<DetailProduct>> GetDetailProductByProductIDAndProductColorID(int ProductID, int ProductColorID)
         {
 
-            var detailProduct = _customCache.Get<DetailProduct>(_customCache.GenerateCacheKeyProduct(new DetailProductReq() {ProductID=ID,ProductColorID = ProductColorID,Where = "DetailProduct" }));
+            var detailProduct = _customCache.Get<DetailProduct>(_customCache.GenerateCacheKeyProduct(new DetailProductReq() {ProductID=ProductID,ProductColorID = ProductColorID,Where = "DetailProduct" }));
             if(detailProduct == null)
             {
-                detailProduct = await _productDal.GetDetailProductByID(ID);
+                detailProduct = await _productDal.GetDetailProductByID(ProductID);
                 if (detailProduct == null)
                 {
                     
@@ -243,9 +244,9 @@ namespace eShopSolution.BusinessLayer.Service
                 detailColorAndProduct.DetailQuantity=await GetDetailQuantityByProductColorID(ProductColorID);
                 var resultTuple = await GetColorIDByProductColorID(ProductColorID);
                 detailColorAndProduct.MixColor = resultTuple.Item1;
-                detailProduct.ColorItemModel = await GetColorItemModelsByProductID(ID);
+                detailProduct.ColorItemModel = await GetColorItemModelsByProductID(ProductID);
                 detailProduct.collectionModel = detailColorAndProduct;
-                _customCache.Set(key: _customCache.GenerateCacheKeyProduct(new DetailProductReq() { ProductID = ID, ProductColorID = ProductColorID, Where = "DetailProduct" }), value: detailProduct, priority: CacheItemPriority.High);
+                _customCache.Set(key: _customCache.GenerateCacheKeyProduct(new DetailProductReq() { ProductID = ProductID, ProductColorID = ProductColorID, Where = "DetailProduct" }), value: detailProduct, priority: CacheItemPriority.High);
             }
             return new BaseRep<DetailProduct>() { code = 200, Value = detailProduct };
         }
@@ -465,7 +466,7 @@ namespace eShopSolution.BusinessLayer.Service
                         SizeID = details.SizeID,
                         Quantity = details.Quantity
                     };
-                    var result = await productSizeInventoryDal.CreateProductSizeInventory(detailModel);
+                    var result = await productSizeInventoryDal.Create(detailModel);
                     if (result.code != 200)
                     {
                         Console.WriteLine($"Error adding product size and quantity for SizeID {details.SizeID}: {result.Value}");
@@ -497,7 +498,6 @@ namespace eShopSolution.BusinessLayer.Service
             }
             return new BaseRep<string>() { code = 200 };
         }
-        
         public async Task<BaseRep<string>> CreateProduct(ProductModel productModel, List<ProductDataNew>? newCollectionModels = null, List<CollectionModel>? oldCollectionModels = null)
         {
             using (var scope = _serviceProvider.CreateScope())
