@@ -23,10 +23,10 @@ namespace eShopSolution.BusinessLayer.Service
 
         public async Task<DetailProduct> UpdateDetailProductByProductIDAndColorID(DetailCart cart)
         {
-            var productColorID = await _productColorDal.GetProductColorByProductIDAndColorID(cart.ProductID, cart.ColorID);
-            var DetailQuantityProductModel = await _productSizeInventoryService.GetProductSizeInventoryByProductColorIDAndSizeID(productColorID,cart.SizeID);
-            await _productSizeInventoryService.Update(0,new DetailQuantityProductModel() { ID = 0, ProductColorID = productColorID, Quantity =DetailQuantityProductModel.Value.Quantity-cart.Quantity, SizeID = cart.SizeID });
-            var result = await _productService.GetDetailProductByProductIDAndColorID(cart.ProductID, cart.ColorID);
+            //var productColorID = await _productColorDal.GetProductColorByProductIDAndColorID(cart.ProductID, cart.ColorID);
+            var DetailQuantityProductModel = await _productSizeInventoryService.GetProductSizeInventoryByProductColorIDAndSizeID(cart.ProductColorID,cart.SizeID);
+            await _productSizeInventoryService.Update(0,new DetailQuantityProductModel() { ID = 0, ProductColorID = cart.ProductColorID, Quantity =DetailQuantityProductModel.Value.Quantity-cart.Quantity, SizeID = cart.SizeID });
+            var result = await _productService.GetDetailProductByProductIDAndProductColorID(cart.ProductID, cart.ProductColorID);
             return result.Value;
         }
     }
