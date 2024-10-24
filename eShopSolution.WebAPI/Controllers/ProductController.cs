@@ -156,14 +156,14 @@ namespace eShopSolution.WebAPI.Controllers
             return StatusCode(result.code, result.Value);
         }
 
-        [HttpGet("GetDetailProductByProductIDAndProductColorID/{ID}/{ProductColorID}")]
-        public async Task<IActionResult> GetDetailProductByProductIDAndColorID(int ID, int ProductColorID)
+        [HttpGet("GetDetailProductByProductIDAndProductColorID/{ProductID}/{ProductColorID}")]
+        public async Task<IActionResult> GetDetailProductByProductIDAndColorID(int ProductID, int ProductColorID)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var DetailProduct = await _productService.GetDetailProductByProductIDAndProductColorID(ID, ProductColorID);
+            var DetailProduct = await _productService.GetDetailProductByProductIDAndProductColorID(ProductID, ProductColorID);
             return StatusCode(DetailProduct.code, DetailProduct.Value);
         }
 
