@@ -34,6 +34,24 @@ namespace eShopSolution.DataLayer.Context
              .HasForeignKey(s => s.GenderID)
              .OnDelete(DeleteBehavior.Cascade);
 
+            #region
+
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.Property(p => p.Discount)
+               .HasColumnType("decimal(10, 2)")
+               .HasPrecision(10, 2);
+
+                entity.Property(p => p.PriceIn)
+                      .HasColumnType("decimal(10, 2)")
+                      .HasPrecision(10, 2);
+
+                entity.Property(p => p.PriceOut)
+                      .HasColumnType("decimal(10, 2)")
+                      .HasPrecision(10, 2);
+            });
+            #endregion
+
             modelBuilder.Entity<CategoryAndBrand>()
             .HasOne<Brand>(s => s.Brand)
             .WithMany(g => g.CategoryAndBrands)
@@ -45,6 +63,10 @@ namespace eShopSolution.DataLayer.Context
              .WithMany(g => g.CategoryAndBrands)
              .HasForeignKey(s => s.CategoryID)
              .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CategoryAndBrand>()
+           .HasIndex(mp => new { mp.BrandID, mp.CategoryID })
+           .IsUnique();
 
             modelBuilder.Entity<ProductColors>()
             .HasOne<Product>(s => s.Product)
@@ -98,6 +120,34 @@ namespace eShopSolution.DataLayer.Context
             .WithMany(g => g.ProductSizeInventories)
             .HasForeignKey(s => s.SizeID)
             .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ProductSizeInventory>()
+           .HasIndex(mp => new { mp.SizeID, mp.ProductColorID })
+           .IsUnique();
+
+            modelBuilder.Entity<Sizes>()
+           .HasIndex(mp => new {mp.Name})
+           .IsUnique();
+
+            modelBuilder.Entity<Colors>()
+           .HasIndex(mp => new { mp.Name })
+           .IsUnique();
+
+            modelBuilder.Entity<Gender>()
+           .HasIndex(mp => new { mp.Name })
+           .IsUnique();
+
+            modelBuilder.Entity<Brand>()
+           .HasIndex(mp => new { mp.BrandName })
+           .IsUnique();
+
+            modelBuilder.Entity<Category>()
+           .HasIndex(mp => new { mp.CategoryName })
+           .IsUnique();
+
+            modelBuilder.Entity<ProductImages>()
+           .HasIndex(mp => new { mp.ImageURL })
+           .IsUnique();
 
             modelBuilder.Entity<DetailOrder>()
             .HasOne<ProductSizeInventory>(s => s.ProductSizeInventory)
