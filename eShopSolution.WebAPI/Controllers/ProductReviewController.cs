@@ -3,6 +3,7 @@ using eShopSolution.BusinessLayer.Abstract;
 using eShopSolution.BusinessLayer.Service;
 using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
+using eShopSolution.WebAPI.Permission;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
         [HttpPost]
         [Authorize(Roles = "Customer")]
+        [PermissionAuthorize(PermissionA.ProductReview + "." + AccessA.Create)]
         public async Task<IActionResult> CreateProductReview(AddProductReview addProductReview)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

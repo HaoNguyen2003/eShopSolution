@@ -3,6 +3,7 @@ using eShopSolution.BusinessLayer.Abstract;
 using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.UpdateModel;
+using eShopSolution.WebAPI.Permission;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eShopSolution.WebAPI.Controllers
@@ -27,6 +28,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet("{ID}")]
+        [PermissionAuthorize(PermissionA.PaymentMethod + "." + AccessA.Get)]
         public async Task<IActionResult> GetPayMentMethodByID(int ID)
         {
             var result = await _paymentService.GetByID(ID);
@@ -34,6 +36,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPost]
+        [PermissionAuthorize(PermissionA.PaymentMethod + "." + AccessA.Create)]
         public async Task<IActionResult> AddPaymentMethod([FromBody] AddPaymentMethod addPayment)
         {
             if (!ModelState.IsValid)
@@ -46,6 +49,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPut("{ID}")]
+        [PermissionAuthorize(PermissionA.PaymentMethod + "." + AccessA.Update)]
         public async Task<IActionResult> UpdatePaymentMethod(int ID, [FromBody] UpdatePaymentMethod updatePayment)
         {
             var model = _mapper.Map<PaymentMethodModel>(updatePayment);
@@ -55,6 +59,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpDelete("{ID}")]
+        [PermissionAuthorize(PermissionA.PaymentMethod + "." + AccessA.Delete)]
         public async Task<IActionResult> DeletePaymentMethodByID(int ID)
         {
             var result = await _paymentService.Delete(ID);

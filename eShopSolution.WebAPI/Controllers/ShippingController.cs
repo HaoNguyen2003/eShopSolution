@@ -3,6 +3,7 @@ using eShopSolution.BusinessLayer.Abstract;
 using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.UpdateModel;
+using eShopSolution.WebAPI.Permission;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eShopSolution.WebAPI.Controllers
@@ -27,6 +28,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet("{ID}")]
+        [PermissionAuthorize(PermissionA.Shipping + "." + AccessA.Get)]
         public async Task<IActionResult> GetShippingProvidersByID(int ID)
         {
             var result = await _shippingProvidersService.GetByID(ID);
@@ -34,6 +36,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPost]
+        [PermissionAuthorize(PermissionA.Shipping + "." + AccessA.Create)]
         public async Task<IActionResult> AddShippingProviders([FromBody] AddShip addShip)
         {
             if (!ModelState.IsValid)
@@ -46,6 +49,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPut("{ID}")]
+        [PermissionAuthorize(PermissionA.Shipping + "." + AccessA.Update)]
         public async Task<IActionResult> UpdateShippingProviders(int ID, [FromBody] UpdateShip updateShip)
         {
             var model = _mapper.Map<ShippingProvidersModel>(updateShip);
@@ -55,6 +59,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpDelete("{ID}")]
+        [PermissionAuthorize(PermissionA.Shipping + "." + AccessA.Delete)]
         public async Task<IActionResult> DeleteOrderStatusByID(int ID)
         {
             var result = await _shippingProvidersService.Delete(ID);

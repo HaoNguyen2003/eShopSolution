@@ -8,6 +8,7 @@ using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.UpdateModel;
 using eShopSolution.WebAPI.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using eShopSolution.WebAPI.Permission;
 
 namespace eShopSolution.WebAPI.Controllers
 {
@@ -32,6 +33,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet("{ID}")]
+        [PermissionAuthorize(PermissionA.ProductImage + "." + AccessA.Get)]
         public async Task<IActionResult> GetProductImageByID(int ID)
         {
             var result = await _productImageService.GetByID(ID);
@@ -40,6 +42,7 @@ namespace eShopSolution.WebAPI.Controllers
 
         [HttpPost]
         [Consumes("multipart/form-data")]
+        [PermissionAuthorize(PermissionA.ProductImage + "." + AccessA.Create)]
         public async Task<IActionResult> AddProductImage([FromForm] AddProductImage productImage)
         {
             if (!ModelState.IsValid)
@@ -67,6 +70,7 @@ namespace eShopSolution.WebAPI.Controllers
 
         [HttpPut("{ID}")]
         [Consumes("multipart/form-data")]
+        [PermissionAuthorize(PermissionA.ProductImage + "." + AccessA.Update)]
         public async Task<IActionResult> UpdateProductImage(int ID, [FromForm] UpdateProductImage updateProductImage)
         {
             if (!ModelState.IsValid)
@@ -106,6 +110,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpDelete("{ID}")]
+        [PermissionAuthorize(PermissionA.ProductImage + "." + AccessA.Delete)]
         public async Task<IActionResult> DeleteProductImageByID(int ID)
         {
             var check = await _productImageService.GetByID(ID);

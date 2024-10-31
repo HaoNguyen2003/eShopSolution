@@ -5,6 +5,8 @@ using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.UpdateModel;
 using eShopSolution.WebAPI.Helpers;
+using eShopSolution.WebAPI.Permission;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eShopSolution.WebAPI.Controllers
@@ -38,6 +40,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
         [HttpPost]
         [Consumes("multipart/form-data")]
+        [PermissionAuthorize(PermissionA.Brand+"."+AccessA.Create)]
         public async Task<IActionResult> AddBrand([FromForm] AddBrand addBrand)
         {
             if (!ModelState.IsValid)
@@ -58,6 +61,7 @@ namespace eShopSolution.WebAPI.Controllers
 
         [HttpPut("{ID}")]
         [Consumes("multipart/form-data")]
+        [PermissionAuthorize(PermissionA.Brand+"."+AccessA.Update)]
         public async Task<IActionResult> UpdateBrand(int ID, [FromForm] UpdateBrand updateBrand)
         {
             if (!ModelState.IsValid)
@@ -99,6 +103,7 @@ namespace eShopSolution.WebAPI.Controllers
 
 
         [HttpDelete("{ID}")]
+        [PermissionAuthorize(PermissionA.Brand + "." + AccessA.Delete)]
         public async Task<IActionResult> DeleteBrandByID(int ID)
         {
             var check = await _brandService.GetByID(ID);

@@ -39,6 +39,7 @@ namespace eShopSolution.WebAPI.Controllers
 
 
         [HttpPost("RevokeRefreshToken")]
+        [Authorize]
         public async Task<IActionResult> RevokeRefreshToken(string refreshToken)
         {
             var result = await _authenticationService.RevokenRefreshToken(refreshToken);
@@ -78,15 +79,6 @@ namespace eShopSolution.WebAPI.Controllers
                 return BadRequest(result.ToString());
             return StatusCode(200, result);
         }
-
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public IActionResult CheckToken()
-        {
-            return Ok("day la admin");
-        }
-
-
         [HttpPost("Login-2FA")]
         public async Task<IActionResult> LoginWithOTP(string Email, string OTP)
         {

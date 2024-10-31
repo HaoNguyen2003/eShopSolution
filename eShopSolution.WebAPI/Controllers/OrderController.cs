@@ -8,6 +8,7 @@ using eShopSolution.DtoLayer.RequestModel;
 using eShopSolution.PayMentService.Helper;
 using eShopSolution.PayMentService.Model;
 using eShopSolution.PayMentService.Service;
+using eShopSolution.WebAPI.Permission;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +37,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [Authorize(Roles = "Customer")]
-        [HttpPost]
+        [PermissionAuthorize(PermissionA.Order + "." + AccessA.Create)]
         public async Task<IActionResult>CreateOrder(AddOrderModel addOrderModel)
         {
             var orderModel = _mapper.Map<OrderModel>(addOrderModel);
@@ -81,7 +82,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPost("PostDataOfVnPay")]
-        [Authorize(Roles = "Customer")]
+        [PermissionAuthorize(PermissionA.Order + "." + AccessA.Create)]
         public IActionResult PostDataOfVnPay(VnPaymentResquestModel vnPaymentResquestModel)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -93,12 +94,14 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPost("Querydr")]
+        [PermissionAuthorize(PermissionA.MenuPermission + "." + AccessA.Get)]
         public IActionResult Querydr(string vnp_TxnRef, string vnp_TransactionDate)
         {
             return Ok(_vnPayService.vnpay_querydr(vnp_TxnRef, vnp_TransactionDate, HttpContext));
         }
 
         [HttpPost("Refund")]
+        [PermissionAuthorize(PermissionA.MenuPermission + "." + AccessA.Refund)]
         public async Task<IActionResult> Refund(int OrderID, double price)
         {
             InfoPaymentModel model = await _infoPaymentService.GetByOrderId(OrderID);

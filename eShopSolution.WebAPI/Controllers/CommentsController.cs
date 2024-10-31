@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using eShopSolution.WebAPI.Permission;
 
 namespace eShopSolution.WebAPI.Controllers
 {
@@ -35,6 +36,7 @@ namespace eShopSolution.WebAPI.Controllers
             return Ok(result.Value);
         }
         [HttpPost("CreateComment")]
+        [PermissionAuthorize(PermissionA.Comments + "." + AccessA.Create)]
         public async Task<IActionResult>CreateComment(AddComment addComment)
         {
             var result = await _commentsService.CreateComment(addComment);
@@ -42,6 +44,7 @@ namespace eShopSolution.WebAPI.Controllers
             return Ok(result);
         }
         [HttpPost("ReplyComment")]
+        [PermissionAuthorize(PermissionA.Comments+"."+AccessA.Create)]
         public async Task<IActionResult> ReplyComment(ReplyComment replyComment,string con)
         {
             /*var hubContext = (IHubContext<CommentHub>)HttpContext.RequestServices.GetService(typeof(IHubContext<CommentHub>));
@@ -50,8 +53,8 @@ namespace eShopSolution.WebAPI.Controllers
             //await hubContext.Clients.Group($"ProductComment_{replyComment.ParentCommentID}").SendAsync("ReceiveComment", result.Value);
             return Ok(result);
         }
-        [Authorize]
         [HttpDelete]
+        [PermissionAuthorize(PermissionA.Comments + "." + AccessA.Delete)]
         public async Task<IActionResult> DeleteComment(int ID)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -63,12 +66,14 @@ namespace eShopSolution.WebAPI.Controllers
             return Ok(result);
         }
         [HttpPut]
+        [PermissionAuthorize(PermissionA.Comments + "." + AccessA.Update)]
         public async Task<IActionResult>UpdateComment(UpdateComment updateComment)
         {
             var result = await _commentsService.UpdateComment(updateComment);
             return Ok(result);
         }
         [HttpGet("level")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> GetLevel(int parentID, int level, int DisplayCommentLevelID)
         {
             var result = await _commentsService.FindLevelCommentParent(parentID, level, DisplayCommentLevelID);

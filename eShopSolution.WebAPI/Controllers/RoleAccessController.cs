@@ -1,6 +1,7 @@
 ﻿using eShopSolution.BusinessLayer.Abstract;
 using eShopSolution.BusinessLayer.Service;
 using eShopSolution.DtoLayer.Model;
+using eShopSolution.WebAPI.Permission;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,7 @@ namespace eShopSolution.WebAPI.Controllers
             return Ok(result);
         }
         [HttpGet("ID")]
+        [PermissionAuthorize(PermissionA.RoleAccess + "." + AccessA.Get)]
         public async Task<IActionResult> GetByID(int ID)
         {
             var result = await _aspNetRoleAccessService.GetByID(ID);
@@ -30,18 +32,21 @@ namespace eShopSolution.WebAPI.Controllers
             return Ok(result);
         }
         [HttpPost]
+        [PermissionAuthorize(PermissionA.RoleAccess + "." + AccessA.Create)]
         public async Task<IActionResult> Create(RoleAccessModel roleccessModel)
         {
             var result = await _aspNetRoleAccessService.Create(roleccessModel);
             return StatusCode(result.code, result);
         }
         [HttpPut("ID")]
+        [PermissionAuthorize(PermissionA.RoleAccess + "." + AccessA.Update)]
         public async Task<IActionResult> Update(RoleAccessModel roleccessModel)
         {
             var result = await _aspNetRoleAccessService.Update(roleccessModel.ID, roleccessModel);
             return StatusCode(result.code, result);
         }
         [HttpDelete("ID")]
+        [PermissionAuthorize(PermissionA.RoleAccess + "." + AccessA.Delete)]
         public async Task<IActionResult> Delete(int ID)
         {
             var result = await _aspNetRoleAccessService.Delete(ID);

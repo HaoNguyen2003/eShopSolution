@@ -3,6 +3,8 @@ using eShopSolution.BusinessLayer.Abstract;
 using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.UpdateModel;
+using eShopSolution.WebAPI.Permission;
+using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eShopSolution.WebAPI.Controllers
@@ -20,6 +22,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet]
+        [PermissionAuthorize(PermissionA.CategoryAndBrand+"."+AccessA.Get)]
         public async Task<IActionResult> GetAllCategoryAndBrand()
         {
             var result = await _categoryAndBrandService.GetAll();
@@ -27,6 +30,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet("GetCategoryAndBrandByID/{ID}")]
+        [PermissionAuthorize(PermissionA.CategoryAndBrand + "." + AccessA.Get)]
         public async Task<IActionResult> GetCategoryAndBrandByID(int ID)
         {
             var result = await _categoryAndBrandService.GetByID(ID);
@@ -34,6 +38,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet("GetCategoryByBrandID/{BrandID}")]
+        [PermissionAuthorize(PermissionA.CategoryAndBrand + "." + AccessA.Get)]
         public async Task<IActionResult> GetCategoryByBrandID(int BrandID)
         {
             var result = await _categoryAndBrandService.GetAllCategoryByBrandID(BrandID);
@@ -41,6 +46,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet("GetBrandByCategoryID/{CategoryID}")]
+        [PermissionAuthorize(PermissionA.CategoryAndBrand + "." + AccessA.Get)]
         public async Task<IActionResult> GetBrandByCategoryID(int CategoryID)
         {
             var result = await _categoryAndBrandService.GetAllBrandByCategoryID(CategoryID);
@@ -48,6 +54,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPost]
+        [PermissionAuthorize(PermissionA.CategoryAndBrand + "." + AccessA.Create)]
         public async Task<IActionResult> AddCategoryAndBrand([FromBody] AddCategoryAndBrand addCategoryAndBrand)
         {
             if (!ModelState.IsValid)
@@ -60,6 +67,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPut("{ID}")]
+        [PermissionAuthorize(PermissionA.CategoryAndBrand + "." + AccessA.Update)]
         public async Task<IActionResult> UpdateCategoryAndBrand(int ID, [FromBody] UpdateCategoryAndBrand updateCategoryAndBrand)
         {
             var model = _mapper.Map<CategoryAndBrandModel>(updateCategoryAndBrand);
@@ -69,6 +77,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpDelete("{ID}")]
+        [PermissionAuthorize(PermissionA.CategoryAndBrand + "." + AccessA.Delete)]
         public async Task<IActionResult> DeleteGenderByID(int ID)
         {
             var result = await _categoryAndBrandService.Delete(ID);

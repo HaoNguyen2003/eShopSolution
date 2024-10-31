@@ -3,6 +3,7 @@ using eShopSolution.BusinessLayer.Abstract;
 using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.UpdateModel;
+using eShopSolution.WebAPI.Permission;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eShopSolution.WebAPI.Controllers
@@ -27,6 +28,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet("{ID}")]
+        [PermissionAuthorize(PermissionA.Gender + "." + AccessA.Get)]
         public async Task<IActionResult> GetGenderByID(int ID)
         {
             var result = await _genderService.GetByID(ID);
@@ -34,6 +36,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPost]
+        [PermissionAuthorize(PermissionA.Gender+"."+AccessA.Create)]
         public async Task<IActionResult> AddGender([FromBody] AddGender addGender)
         {
             if (!ModelState.IsValid)
@@ -46,6 +49,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPut("{ID}")]
+        [PermissionAuthorize(PermissionA.Gender + "." + AccessA.Update)]
         public async Task<IActionResult> UpdateGender(int ID, [FromBody] UpdateGender updateGender)
         {
             var genderModel = _mapper.Map<GenderModel>(updateGender);
@@ -55,6 +59,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpDelete("{ID}")]
+        [PermissionAuthorize(PermissionA.Gender + "." + AccessA.Delete)]
         public async Task<IActionResult> DeleteGenderByID(int ID)
         {
             var result = await _genderService.Delete(ID);

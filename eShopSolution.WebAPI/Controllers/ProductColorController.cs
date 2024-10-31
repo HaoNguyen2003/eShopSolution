@@ -3,6 +3,7 @@ using eShopSolution.BusinessLayer.Abstract;
 using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.UpdateModel;
+using eShopSolution.WebAPI.Permission;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eShopSolution.WebAPI.Controllers
@@ -26,6 +27,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet("{ID}")]
+        [PermissionAuthorize(PermissionA.ProductColor + "." + AccessA.Get)]
         public async Task<IActionResult> GetProductColorByID(int ID)
         {
             var result = await _productColorService.GetByID(ID);
@@ -33,6 +35,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPost]
+        [PermissionAuthorize(PermissionA.ProductColor + "." + AccessA.Create)]
         public async Task<IActionResult> AddProductColor([FromBody] AddProductColor addProductColor)
         {
             if (!ModelState.IsValid)
@@ -45,6 +48,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPut("{ID}")]
+        [PermissionAuthorize(PermissionA.ProductColor + "." + AccessA.Update)]
         public async Task<IActionResult> UpdateProductColor(int ID, [FromBody] UpdateProductColor updateProductColor)
         {
             var Model = _mapper.Map<ProductColorModel>(updateProductColor);
@@ -54,6 +58,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpDelete("{ID}")]
+        [PermissionAuthorize(PermissionA.ProductColor + "." + AccessA.Delete)]
         public async Task<IActionResult> DeleteProductColorByID(int ID)
         {
             var result = await _productColorService.Delete(ID);

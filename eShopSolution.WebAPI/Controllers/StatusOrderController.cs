@@ -3,6 +3,7 @@ using eShopSolution.BusinessLayer.Abstract;
 using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.UpdateModel;
+using eShopSolution.WebAPI.Permission;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eShopSolution.WebAPI.Controllers
@@ -27,6 +28,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet("{ID}")]
+        [PermissionAuthorize(PermissionA.StatusOrder + "." + AccessA.Get)]
         public async Task<IActionResult> GetStatusOrderByID(int ID)
         {
             var result = await _orderStatusService.GetByID(ID);
@@ -34,6 +36,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPost]
+        [PermissionAuthorize(PermissionA.StatusOrder + "." + AccessA.Create)]
         public async Task<IActionResult> AddOrderStatus([FromBody] AddOrderStatus addOrderStatus)
         {
             if (!ModelState.IsValid)
@@ -46,6 +49,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPut("{ID}")]
+        [PermissionAuthorize(PermissionA.StatusOrder + "." + AccessA.Update)]
         public async Task<IActionResult> UpdateOrderStatus(int ID, [FromBody] UpdateOrderStatus updateOrderStatus)
         {
             var model = _mapper.Map<OrderStatusModel>(updateOrderStatus);
@@ -55,6 +59,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpDelete("{ID}")]
+        [PermissionAuthorize(PermissionA.StatusOrder + "." + AccessA.Delete)]
         public async Task<IActionResult> DeleteOrderStatusByID(int ID)
         {
             var result = await _orderStatusService.Delete(ID);

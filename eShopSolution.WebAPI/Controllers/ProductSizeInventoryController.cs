@@ -2,6 +2,7 @@
 using eShopSolution.BusinessLayer.Abstract;
 using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
+using eShopSolution.WebAPI.Permission;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eShopSolution.WebAPI.Controllers
@@ -24,12 +25,14 @@ namespace eShopSolution.WebAPI.Controllers
             return StatusCode(result.code, result.Value);
         }
         [HttpGet("{ID}")]
+        [PermissionAuthorize(PermissionA.ProductSizeInventory + "." + AccessA.Get)]
         public async Task<IActionResult> GetByID(int ID)
         {
             var result = await _productSizeInventoryService.GetByID(ID);
             return StatusCode(result.code, result.Value);
         }
         [HttpPost]
+        [PermissionAuthorize(PermissionA.ProductSizeInventory + "." + AccessA.Create)]
         public async Task<IActionResult> Create(AddProductSizeAndColor addProductSizeAndColor)
         {
             if (!ModelState.IsValid)
@@ -41,6 +44,7 @@ namespace eShopSolution.WebAPI.Controllers
             return StatusCode(result.code, result.Value);
         }
         [HttpPut]
+        [PermissionAuthorize(PermissionA.ProductSizeInventory + "." + AccessA.Update)]
         public async Task<IActionResult> Update(AddProductSizeAndColor addProductSizeAndColor)
         {
             if (!ModelState.IsValid)
@@ -52,6 +56,7 @@ namespace eShopSolution.WebAPI.Controllers
             return StatusCode(result.code, result.Value);
         }
         [HttpDelete("DeleteProductSizeAndColor/{ProductColorID}/{SizeID}")]
+        [PermissionAuthorize(PermissionA.ProductSizeInventory + "." + AccessA.Delete)]
         public async Task<IActionResult> Delete(int ProductColorID, int SizeID)
         {
             if (!ModelState.IsValid)

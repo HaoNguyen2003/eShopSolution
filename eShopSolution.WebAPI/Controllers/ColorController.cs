@@ -29,6 +29,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet("{ID}")]
+        [PermissionAuthorize(PermissionA.Color + "." + AccessA.Get)]
         public async Task<IActionResult> GetColorByID(int ID)
         {
             var result = await _colorService.GetByID(ID);
@@ -36,7 +37,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPost]
-        //[PermissionAuthorize("Color.Create")]
+        [PermissionAuthorize(PermissionA.Color+"."+AccessA.Create)]
         public async Task<IActionResult> AddColor([FromBody] AddColor addColor)
         {
             if (!ModelState.IsValid)
@@ -49,6 +50,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPut("{ID}")]
+        [PermissionAuthorize(PermissionA.Color + "." + AccessA.Update)]
         public async Task<IActionResult> UpdateColor(int ID, [FromBody] UpdateColor updateColor)
         {
             var colorModel = _mapper.Map<ColorModel>(updateColor);
@@ -58,6 +60,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpDelete("{ID}")]
+        [PermissionAuthorize(PermissionA.Color + "." + AccessA.Delete)]
         public async Task<IActionResult> DeleteColorByID(int ID)
         {
             var result = await _colorService.Delete(ID);

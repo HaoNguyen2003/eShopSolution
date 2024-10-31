@@ -8,6 +8,7 @@ using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.RepositoryModel;
 using eShopSolution.DtoLayer.UpdateModel;
 using eShopSolution.WebAPI.Helpers;
+using eShopSolution.WebAPI.Permission;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -40,6 +41,7 @@ namespace eShopSolution.WebAPI.Controllers
 
         [HttpPost("AddProduct")]
         [Consumes("multipart/form-data")]
+        [PermissionAuthorize(PermissionA.Product + "." + AccessA.Create)]
         public async Task<IActionResult> AddProduct([FromForm] AddProductSizeInventory addProduct)
         {
             if (!ModelState.IsValid)
@@ -96,6 +98,7 @@ namespace eShopSolution.WebAPI.Controllers
 
         [HttpPost("GetDataFromFileJson")]
         [Consumes("multipart/form-data")]
+        [PermissionAuthorize(PermissionA.Product + "." + AccessA.Create)]
         public async Task<IActionResult> GetDataFromFile(IFormFile file)
         {
             var ListProduct = _readFileJson.FucntionReadFileJson(file);
@@ -168,7 +171,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet("GetProductInDashBoardByProductIDAndProductColorID/{ProductID}/{ProductColorID}")]
-        //[Authorize]
+        [PermissionAuthorize(PermissionA.Product + "." + AccessA.Get)]
         public async Task<IActionResult> GetProductInDashBoardByProductIDAndColorID(int ProductID, int ProductColorID)
         {
             if (!ModelState.IsValid)
@@ -192,6 +195,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpPut("{ID}")]
+        [PermissionAuthorize(PermissionA.Product + "." + AccessA.Update)]
         public async Task<IActionResult> UpdateProduct(int ID, UpdateProduct updateProduct)
         {
             if (!ModelState.IsValid)
@@ -205,6 +209,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpDelete("{ID}")]
+        [PermissionAuthorize(PermissionA.Product + "." + AccessA.Delete)]
         public async Task<IActionResult> DeleteProduct(int ID)
         {
             if (!ModelState.IsValid)

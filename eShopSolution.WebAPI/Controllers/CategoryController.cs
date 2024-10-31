@@ -5,6 +5,7 @@ using eShopSolution.DtoLayer.AddModel;
 using eShopSolution.DtoLayer.Model;
 using eShopSolution.DtoLayer.UpdateModel;
 using eShopSolution.WebAPI.Helpers;
+using eShopSolution.WebAPI.Permission;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eShopSolution.WebAPI.Controllers
@@ -31,6 +32,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpGet("{ID}")]
+        [PermissionAuthorize(PermissionA.Category + "." + AccessA.Get)]
         public async Task<IActionResult> GetCategoryByID(int ID)
         {
             var result = await _categoryService.GetByID(ID);
@@ -38,6 +40,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
         [HttpPost]
         [Consumes("multipart/form-data")]
+        [PermissionAuthorize(PermissionA.Category+"."+AccessA.Create)]
         public async Task<IActionResult> AddCategory([FromForm] AddCategory addCategory)
         {
             if (!ModelState.IsValid)
@@ -58,6 +61,7 @@ namespace eShopSolution.WebAPI.Controllers
 
         [HttpPut("{ID}")]
         [Consumes("multipart/form-data")]
+        [PermissionAuthorize(PermissionA.Category + "." + AccessA.Update)]
         public async Task<IActionResult> UpdateCategory(int ID, [FromForm] UpdateCategory updateCategory)
         {
             if (!ModelState.IsValid)
@@ -97,6 +101,7 @@ namespace eShopSolution.WebAPI.Controllers
         }
 
         [HttpDelete("{ID}")]
+        [PermissionAuthorize(PermissionA.Category + "." + AccessA.Delete)]
         public async Task<IActionResult> DeleteCategoryByID(int ID)
         {
             var check = await _categoryService.GetByID(ID);
