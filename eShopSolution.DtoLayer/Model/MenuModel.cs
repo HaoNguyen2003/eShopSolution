@@ -13,5 +13,19 @@ namespace eShopSolution.DtoLayer.Model
         public string? icon { get; set; }
         public string? title { get; set; }
         public string? URL { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is MenuModel menu)
+            {
+                return ID == menu.ID; 
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode(); 
+        }
     }
 }
