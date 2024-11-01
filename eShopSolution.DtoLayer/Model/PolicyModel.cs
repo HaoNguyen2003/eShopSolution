@@ -8,9 +8,7 @@ namespace eShopSolution.DtoLayer.Model
 {
     public class PolicyModel
     {
-        public int RoleAccessID { get; set; }
-        public PermissionModel permission { get; set; }
         public MenuModel menu { get; set; }
-
+        public List<RoleAccessDisplayModel> roleAccessDisplayModels { get; set; }
     }
 }
