@@ -35,9 +35,8 @@ namespace eShopSolution.WebAPI.Controllers
             _infoPaymentService=infoPaymentService;
             _zaloPayService=zaloPayService;
         }
-
+        [HttpPost]
         [Authorize(Roles = "Customer")]
-        [PermissionAuthorize(PermissionA.Order + "." + AccessA.Create)]
         public async Task<IActionResult>CreateOrder(AddOrderModel addOrderModel)
         {
             var orderModel = _mapper.Map<OrderModel>(addOrderModel);
