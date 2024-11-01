@@ -47,7 +47,9 @@ namespace eShopSolution.BusinessLayer.Service
             };
             userList.AddRange(audiences.Select(x => new Claim(JwtRegisteredClaimNames.Aud, x)));
             userList.AddRange(userRoles.Select(x => new Claim(ClaimTypes.Role, x)));
-            userList.AddRange(policys.Value.Select(policy => new Claim("Permission", policy.menu.Name+"."+policy.permission.PermissionName.ToString())));
+            //userList.AddRange(policys.Value.Select(policy => new Claim("Permission", policy.menu.Name+"."+policy.permission.PermissionName.ToString())));
+            userList.AddRange( policys.Value.SelectMany(policy => policy.roleAccessDisplayModels.Select(roleAccess =>
+            new Claim("Permission", $"{policy.menu.Name}.{roleAccess.permissions.PermissionName}"))));
             return userList;
         }
         public TokenModel CreateToken(AppUser appUser)

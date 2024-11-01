@@ -46,27 +46,58 @@ namespace eShopSolution.BusinessLayer.Service
             }
             return await GetAllPermissionOfRole(resultRole.Value.Id);
         }
-
         public async Task<Response<List<PolicyModel>>> GetAllPermissionOfRole(string RoleID)
         {
             var ListPolicyModels = new List<PolicyModel>();
             var ListAccessModels = await _aspNetRoleAccessService.GetAllRoleAccessModel(RoleID);
-            foreach(var permissionAccessModel in ListAccessModels)
+            var menuPermissions = new Dictionary<MenuModel, List<RoleAccessDisplayModel>>();
+            foreach (var permissionAccessModel in ListAccessModels)
             {
                 var PermissionMenu = await _permissionMenuService.GetByID(permissionAccessModel.MenuPermissionID);
                 var PermissionModel = await _permissionService.GetByID(PermissionMenu.Value.PermissionID);
                 var MenuModel = await _menuService.GetByID(PermissionMenu.Value.MenuID);
-                ListPolicyModels.Add(new PolicyModel() { RoleAccessID = permissionAccessModel.ID, menu = MenuModel.Value, permission = PermissionModel.Value });
+
+                if (!menuPermissions.ContainsKey(MenuModel.Value))
+                {
+                    menuPermissions[MenuModel.Value] = new List<RoleAccessDisplayModel>();
+                }
+                menuPermissions[MenuModel.Value].Add(new RoleAccessDisplayModel
+                {
+                    RoleAccessID = permissionAccessModel.ID,
+                    permissions = PermissionModel.Value
+                });
             }
-            return new Response<List<PolicyModel>>() { IsSuccess=true,Value = ListPolicyModels};
+            foreach (var entry in menuPermissions)
+            {
+                ListPolicyModels.Add(new PolicyModel
+                {
+                    menu = entry.Key,
+                    roleAccessDisplayModels = entry.Value
+                });
+            }
+            return new Response<List<PolicyModel>> { IsSuccess = true, Value = ListPolicyModels };
         }
+
         public List<PolicyModel> MergeObjectArrays(List<PolicyModel> array1, List<PolicyModel> array2)
         {
             return array1.Concat(array2)
-                         .GroupBy(obj => obj.RoleAccessID)
-                         .Select(group => group.First())
+                         .GroupBy(obj => obj.menu) 
+                         .Select(group =>
+                         {
+                             var combinedRoleAccess = group
+                                 .SelectMany(g => g.roleAccessDisplayModels)
+                                 .GroupBy(access => access.RoleAccessID) 
+                                 .Select(g => g.First()) 
+                                 .ToList();
+                             return new PolicyModel
+                             {
+                                 menu = group.Key,
+                                 roleAccessDisplayModels = combinedRoleAccess
+                             };
+                         })
                          .ToList();
         }
+
 
         public async Task<Response<List<PolicyModel>>> GetAllPermissionOfUser(string UserID)
         {
@@ -101,9 +132,8 @@ namespace eShopSolution.BusinessLayer.Service
                 IsSuccess = true,
                 Value = new PolicyModel
                 {
-                    RoleAccessID = RoleAccessID,
                     menu = MenuModel.Value,
-                    permission = PermissionModel.Value
+                    roleAccessDisplayModels = new List<RoleAccessDisplayModel>() { new RoleAccessDisplayModel() {permissions=PermissionModel.Value,RoleAccessID=RoleAccessID} }
                 }
             };
         }
