@@ -278,12 +278,6 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors();
 app.UseHttpsRedirection();
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(builder.Environment.ContentRootPath, "Image")),
-    RequestPath = "/Image"
-});
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
